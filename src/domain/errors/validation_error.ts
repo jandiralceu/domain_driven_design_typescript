@@ -1,7 +1,7 @@
 export class ValidationError extends Error {
-    constructor(message: string) {
-        super(message);
+  constructor(message: string) {
+    super(message);
 
-        Object.setPrototypeOf(this, ValidationError.prototype);
-    }
+    Object.setPrototypeOf(this, ValidationError.prototype);
+  }
 }

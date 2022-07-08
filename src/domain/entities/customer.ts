@@ -1,14 +1,31 @@
-import { ValidationError } from "../errors/validation_error";
-import { Address } from "./address";
+import { ValidationError } from '../errors';
+import { Validation } from './types';
+import { Address } from './address';
 
 export class Customer {
   #id: string;
+
   #name: string;
+
   #address: Address;
 
+  #isActive = true;
+
   constructor(id: string, name: string, address: Address) {
-    this.validate({ id, name, address });
-    
+    this.#validate([
+      { fieldName: 'id', value: id, validations: { isRequired: true } },
+      {
+        fieldName: 'name',
+        value: name,
+        validations: { isRequired: true, minLength: 4 },
+      },
+      {
+        fieldName: 'address',
+        value: address,
+        validations: { isRequired: true },
+      },
+    ]);
+
     this.#id = id;
     this.#name = name;
     this.#address = address;
@@ -27,36 +44,69 @@ export class Customer {
   }
 
   get isActive(): boolean {
-    return true;
+    return this.#isActive;
   }
 
-  validate(values: { [key: string]: any}): void {
-    for (let [key, value] of Object.entries(values)) {
-      if (typeof value === 'string') {
-        if (!value) throw new ValidationError(`${key} is required.`)
+  #validate(values: Validation[]): void {
+    values.forEach(({ fieldName, value, ...props }) => {
+      if (props?.validations?.isRequired) {
+        if (typeof value == 'string' || value instanceof Address) {
+          if (!value) {
+            throw new ValidationError(
+              `${fieldName.toLowerCase()} is required.`
+            );
+          }
+        }
       }
 
-      if (value instanceof Address) {
-        if (!value) throw new ValidationError(`${key} is required.`)
+      if (
+        props?.validations?.minLength &&
+        value.length < props?.validations?.minLength
+      ) {
+        if (typeof value == 'string') {
+          throw new ValidationError(
+            `${fieldName.toLowerCase()} length, must be equal or greater than ${
+              props.validations.minLength
+            }. Current length is ${value.length}.`
+          );
+        }
       }
-    }
+    });
   }
 
   changeName(name: string): void {
-    this.validate({ name });
+    this.#validate([
+      {
+        value: name,
+        fieldName: 'name',
+        validations: { isRequired: true, minLength: 4 },
+      },
+    ]);
     this.#name = name;
   }
 
   changeAddress(address: Address): void {
-    this.validate({ address });
+    this.#validate([
+      {
+        fieldName: 'address',
+        value: address,
+        validations: { isRequired: true },
+      },
+    ]);
     this.#address = address;
   }
 
   toString(): string {
-    return `Name: ${this.#name} \n Address: ${this.#address.toString()} \n Active: ${this.isActive.toString()}`
+    return `Name: ${
+      this.#name
+    } \n Address: ${this.#address.toString()} \n Active: ${this.isActive.toString()}`;
   }
 
   isEqual(customer: Customer): boolean {
-    return customer instanceof Customer && this.#id === customer.id && this.#name === customer.name && this.#address.isEqual(customer.address);
+    return (
+      this.#id === customer.id &&
+      this.#name === customer.name &&
+      this.#address.isEqual(customer.address)
+    );
   }
 }

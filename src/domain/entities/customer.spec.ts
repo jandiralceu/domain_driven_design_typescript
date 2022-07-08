@@ -1,31 +1,49 @@
-import { Address } from "./address"
-import { Customer } from "./customer"
+import { faker } from '@faker-js/faker';
+
+import { Address } from './address';
+import { Customer } from './customer';
 
 describe('customer', () => {
-    let address: Address;
+  let mockAddress: Address;
+  let mockCustomer: Customer;
 
-    beforeAll(() => {
-        address = new Address('Rua Azevedo lima', 198, 'Rio de Janeiro', '0000000');
-    });
+  beforeEach(() => {
+    mockAddress = new Address(
+      faker.address.street(),
+      faker.datatype.number(),
+      faker.address.cityName(),
+      faker.address.zipCode('###.##-###')
+    );
+    mockCustomer = new Customer(
+      faker.datatype.uuid(),
+      faker.name.findName(),
+      mockAddress
+    );
+  });
 
-    it('should throw an error if id is empty', () => {
-        expect(() => new Customer("", "John", address)).toThrowError("id is required.");
-    });
+  it('should throw an error if id is empty', () => {
+    expect(
+      () => new Customer('', faker.name.findName(), mockAddress)
+    ).toThrowError('id is required.');
+  });
 
-    it('should throw an error if name is empty', () => {
-        expect(() => new Customer("1", "", address)).toThrowError("name is required.");
-    });
+  it('should throw an error if name is empty', () => {
+    expect(
+      () => new Customer(faker.datatype.uuid(), '', mockAddress)
+    ).toThrowError('name is required.');
+  });
 
-    it('should change name', () => {
-        const customer = new Customer("1", "Jandir Alceu", address);
-        customer.changeName("Manuel Cutabiala");
-        expect(customer.name).toBe("Manuel Cutabiala");
-    });
+  it('should change name', () => {
+    const newName = faker.name.findName();
+    mockCustomer.changeName(newName);
+    expect(mockCustomer.name).toBe(newName);
+  });
 
-    it('should throw an error if new name is invalid', () => {
-        const customer = new Customer("1", "Jandir Alceu", address);
+  it('should throw an error if new name is invalid', () => {
+    const name = faker.name.findName();
+    const customer = new Customer('1', name, mockAddress);
 
-        expect(() => customer.changeName("")).toThrow('name is required.');
-        expect(customer.name).toBe("Jandir Alceu")
-    });
-})
+    expect(() => customer.changeName('')).toThrow('name is required.');
+    expect(customer.name).toBe(name);
+  });
+});

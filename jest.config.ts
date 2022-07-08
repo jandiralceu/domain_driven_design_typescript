@@ -13,22 +13,14 @@ export default {
   // The directory where Jest should store its cached dependency information
   // cacheDirectory: "/private/var/folders/92/9g_634j111j5p6q_j091w01c0000gn/T/jest_dx",
 
-  // Automatically clear mock calls, instances, contexts and results before every test
   clearMocks: true,
-
-  // Indicates whether the coverage information should be collected while executing the test
-  // collectCoverage: false,
-
-  // An array of glob patterns indicating a set of files for which coverage information should be collected
-  // collectCoverageFrom: undefined,
-
-  // The directory where Jest should output its coverage files
-  // coverageDirectory: undefined,
-
-  // An array of regexp pattern strings used to skip coverage collection
-  // coveragePathIgnorePatterns: [
-  //   "/node_modules/"
-  // ],
+  collectCoverage: true,
+  collectCoverageFrom: [
+    '<rootDir>/src/**/*.ts',
+    '!<rootDir>/src/domain/entities/types/**/*',
+    '!<rootDir>/src/**/index.ts'
+  ],
+  coverageDirectory: 'coverage',
 
   // Indicates which provider should be used to instrument code for coverage
   coverageProvider: "v8",

@@ -1,24 +1,14 @@
 import { ValidationError } from '../errors';
 import { Validation } from './types';
 
-export class OrderItem {
+export class Product {
   #id: string;
 
   #name: string;
 
   #price: number;
 
-  #quantity: number;
-
-  #productId: string;
-
-  constructor(
-    id: string,
-    name: string,
-    price: number,
-    productId: string,
-    quantity = 1
-  ) {
+  constructor(id: string, name: string, price: number) {
     this.#validation([
       { fieldName: 'id', value: id, validations: { isRequired: true } },
       {
@@ -27,18 +17,10 @@ export class OrderItem {
         validations: { isRequired: true, minLength: 2 },
       },
       { fieldName: 'price', value: price, validations: { minLength: 0 } },
-      {
-        fieldName: 'productId',
-        value: quantity,
-        validations: { isRequired: true },
-      },
-      { fieldName: 'quantity', value: quantity, validations: { minLength: 1 } },
     ]);
     this.#id = id;
     this.#name = name;
     this.#price = price;
-    this.#quantity = quantity;
-    this.#productId = productId;
   }
 
   get id(): string {
@@ -50,21 +32,13 @@ export class OrderItem {
   }
 
   get price(): number {
-    return this.#price * this.#quantity;
-  }
-
-  get quantity(): number {
-    return this.#quantity;
-  }
-
-  get productId(): string {
-    return this.#productId;
+    return this.#price;
   }
 
   #validation(values: Validation[]) {
     values.forEach(({ fieldName, value, ...props }) => {
       if (props?.validations?.isRequired) {
-        if (typeof value == 'string') {
+        if (typeof value === 'string') {
           if (!value) {
             throw new ValidationError(
               `${fieldName.toLowerCase()} is required.`
@@ -73,9 +47,9 @@ export class OrderItem {
         }
       }
 
-      if (typeof props?.validations?.minLength == 'number') {
+      if (typeof props?.validations?.minLength === 'number') {
         if (
-          typeof value == 'string' &&
+          typeof value === 'string' &&
           value.length < props?.validations?.minLength
         ) {
           throw new ValidationError(
@@ -85,7 +59,11 @@ export class OrderItem {
           );
         }
 
-        if (typeof value == 'number' && value < props?.validations?.minLength) {
+        if (
+          typeof value === 'number' &&
+          value < props?.validations?.minLength
+        ) {
+          // eslint-disable-next-line max-len
           throw new ValidationError(
             `${fieldName.toLowerCase()} must be equal or greater than ${
               props.validations.minLength
@@ -96,18 +74,35 @@ export class OrderItem {
     });
   }
 
-  toString(): string {
-    return `id: ${this.#id} - name: ${this.#name} - price: ${
-      this.#price
-    } - quantity: ${this.#quantity} - productId: ${this.#productId}`;
+  updatePrice(price: number): void {
+    this.#validation([
+      { fieldName: 'price', value: price, validations: { minLength: 0 } },
+    ]);
+
+    this.#price = price;
   }
 
-  isEqual(orderItem: OrderItem): boolean {
+  updateName(name: string): void {
+    this.#validation([
+      {
+        fieldName: 'name',
+        value: name,
+        validations: { isRequired: true, minLength: 2 },
+      },
+    ]);
+
+    this.#name = name;
+  }
+
+  toString(): string {
+    return `id: ${this.#id} - name: ${this.#name} - price: ${this.#price}`;
+  }
+
+  isEqual(product: Product): boolean {
     return (
-      this.#id === orderItem.id &&
-      this.#name === orderItem.name &&
-      this.#price === orderItem.price &&
-      this.#quantity === orderItem.quantity
+      this.#id === product.id &&
+      this.#name === product.name &&
+      this.#price === product.price
     );
   }
 }

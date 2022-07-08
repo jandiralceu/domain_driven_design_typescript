@@ -5,7 +5,13 @@
   "main": "index.js",
   "scripts": {
     "build": "npx tsc",
-    "test": "jest"
+    "test": "jest --no-cache --runInBand",
+    "test:watch": "jest --no-cache --runInBand --watch",
+    "test:staged": "jest --no-cache --runInBand --findRelatedTests",
+    "test:ci": "jest --no-cache --runInBand --coverage",
+    "lint:eslint": "eslint --ext .ts --fix ./src",
+    "lint:prettier": "prettier --write ./src",
+    "lint:check": "prettier --check ./src"
   },
   "keywords": [
     "ddd",
@@ -26,8 +32,11 @@
     "eslint": "^8.19.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-airbnb-typescript": "^17.0.0",
+    "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-prettier": "^4.2.1",
     "jest": "^28.1.2",
+    "prettier": "2.7.1",
     "ts-jest": "^28.0.5",
     "ts-node": "^10.8.2",
     "typescript": "^4.7.4"
