@@ -1,4 +1,6 @@
 import { OrderItem } from './order_item';
+import { Validation } from './types';
+import { ValidationError } from '../errors';
 
 export class Order {
   #id: string;
@@ -8,6 +10,20 @@ export class Order {
   #items: OrderItem[];
 
   constructor(id: string, customerId: string, items: OrderItem[]) {
+    this.#validation([
+      { fieldName: 'id', value: id, validations: { isRequired: true } },
+      {
+        fieldName: 'customerId',
+        value: customerId,
+        validations: { isRequired: true },
+      },
+      {
+        fieldName: 'items',
+        value: items,
+        validations: { minLength: 1 },
+      },
+    ]);
+
     this.#id = id;
     this.#customerId = customerId;
     this.#items = items;
@@ -25,25 +41,55 @@ export class Order {
     return this.#items;
   }
 
-  total(): number {
-    return this.#items.reduce(
-      (acc, item) => acc + item.price * item.quantity,
-      0
-    );
+  get totalItems(): number {
+    return this.#items.length;
+  }
+
+  get total(): number {
+    return this.#items.reduce((acc, item) => acc + item.price, 0);
   }
 
   toString(): string {
-    return `ID: ${this.#id}\nCustomerID: ${
+    let printItems = '';
+    this.#items.forEach((item) => {
+      printItems += `${item}\n`;
+    });
+
+    return `id: ${this.#id}\ncustomerId: ${
       this.#customerId
-    }\nItems:\n${this.#items.toString()}`;
+    }\nitems:\n${printItems}`;
+  }
+
+  clone(): Order {
+    return new Order(this.#id, this.#customerId, this.#items);
   }
 
   isEqual(order: Order): boolean {
     return (
       this.#id === order.id &&
       this.#customerId === order.customerId &&
-      this.#items.length === order.items.length &&
+      this.totalItems === order.totalItems &&
       this.#items.every((item, index) => item.isEqual(order.items[index]))
     );
+  }
+
+  #validation(values: Validation[]) {
+    values.forEach(({ fieldName, value, ...props }) => {
+      if (props?.validations?.isRequired) {
+        if (typeof value == 'string') {
+          if (!value) {
+            throw new ValidationError(`${fieldName} is required.`);
+          }
+        }
+      }
+
+      if (props?.validations?.minLength) {
+        if (Array.isArray(value)) {
+          if (value.length < 1) {
+            throw new ValidationError(`${fieldName}: add at the least 1 item.`);
+          }
+        }
+      }
+    });
   }
 }

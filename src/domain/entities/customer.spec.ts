@@ -10,7 +10,7 @@ describe('customer', () => {
   beforeEach(() => {
     mockAddress = new Address(
       faker.address.street(),
-      faker.datatype.number(),
+      faker.address.buildingNumber(),
       faker.address.cityName(),
       faker.address.zipCode('###.##-###')
     );
@@ -33,6 +33,15 @@ describe('customer', () => {
     ).toThrowError('name is required.');
   });
 
+  it('should throw an error if name is less than 4 characters', () => {
+    const name = faker.datatype.string(3);
+    expect(
+      () => new Customer(faker.datatype.uuid(), name, mockAddress)
+    ).toThrowError(
+      `name length, must be equal or greater than 4. Current length is ${name.length}.`
+    );
+  });
+
   it('should change name', () => {
     const newName = faker.name.findName();
     mockCustomer.changeName(newName);
@@ -45,5 +54,53 @@ describe('customer', () => {
 
     expect(() => customer.changeName('')).toThrow('name is required.');
     expect(customer.name).toBe(name);
+  });
+
+  it('should change address', () => {
+    const newAddress = new Address(
+      faker.address.street(),
+      faker.address.buildingNumber(),
+      faker.address.cityName(),
+      faker.address.zipCode('###.##-###')
+    );
+
+    mockCustomer.changeAddress(newAddress);
+    expect(mockCustomer.address.isEqual(newAddress)).toBe(true);
+  });
+
+  it('should make an customer copy', () => {
+    const newCustomer = mockCustomer.clone();
+    expect(mockCustomer.isEqual(newCustomer)).toBe(true);
+  });
+
+  it('should return "false" if customers are not equals', () => {
+    const newCustomer = new Customer(
+      faker.datatype.uuid(),
+      faker.name.findName(),
+      new Address(
+        faker.address.street(),
+        faker.address.buildingNumber(),
+        faker.address.cityName(),
+        faker.address.zipCode('###.##-###')
+      )
+    );
+
+    expect(mockCustomer.isEqual(newCustomer)).toBe(false);
+  });
+
+  it('should return "true" if customers are equals', () => {
+    const newCustomer = mockCustomer.clone();
+
+    expect(mockCustomer.isEqual(newCustomer)).toBe(true);
+  });
+
+  it('should create a customer instance', () => {
+    expect(mockCustomer.toString()).toBe(
+      `id: ${mockCustomer.id}\nname: ${
+        mockCustomer.name
+      }\naddress: ${mockCustomer.address.toString()}\nactive: ${
+        mockCustomer.isActive
+      }`
+    );
   });
 });

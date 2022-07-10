@@ -1,7 +1,10 @@
+import { Validation } from './types';
+import { ValidationError } from '../errors';
+
 export class Address {
   #street: string;
 
-  #number: number;
+  #number: string;
 
   #city: string;
 
@@ -9,43 +12,59 @@ export class Address {
 
   constructor(
     street: string,
-    streetNumber: number,
+    streetNumber: string,
     city: string,
     zipCode: string
   ) {
+    this.#validation([
+      { fieldName: 'street', value: street, validations: { isRequired: true } },
+      {
+        fieldName: 'streetNumber',
+        value: streetNumber,
+        validations: { isRequired: true },
+      },
+      {
+        fieldName: 'city',
+        value: city,
+        validations: { isRequired: true },
+      },
+      {
+        fieldName: 'zipCode',
+        value: zipCode,
+        validations: { isRequired: true },
+      },
+    ]);
+
     this.#street = street;
     this.#number = streetNumber;
     this.#city = city;
     this.#zipCode = zipCode;
-
-    this.validate();
   }
 
-  get street() {
+  get street(): string {
     return this.#street;
   }
 
-  get streetNumber() {
+  get streetNumber(): string {
     return this.#number;
   }
 
-  get city() {
+  get city(): string {
     return this.#city;
   }
 
-  get zipCode() {
+  get zipCode(): string {
     return this.#zipCode;
   }
 
-  validate() {
-    if (!this.#street) throw new Error('Street is required.');
-    if (!this.#number) throw new Error('Street Number is required.');
-    if (!this.#city) throw new Error('City is required.');
-    if (!this.#zipCode) throw new Error('ZipCode Number is required.');
+  clone(): Address {
+    return new Address(this.#street, this.#number, this.#city, this.zipCode);
   }
 
   toString() {
-    return `${this.#street}, ${this.#number}, ${this.#city}, ${this.#zipCode}`;
+    return `street: ${this.#street} - number: ${this.#number} - city: ${
+      this.#city
+    } - ZipCode: ${this.#zipCode}`;
   }
 
   isEqual(address: Address) {
@@ -53,7 +72,19 @@ export class Address {
       this.#street === address.street &&
       this.#number === address.streetNumber &&
       this.#city === address.city &&
-      this.zipCode === address.zipCode
+      this.#zipCode === address.zipCode
     );
+  }
+
+  #validation(values: Validation[]) {
+    values.forEach(({ fieldName, value, ...props }) => {
+      if (props?.validations?.isRequired) {
+        if (typeof value == 'string') {
+          if (!value) {
+            throw new ValidationError(`${fieldName} is required.`);
+          }
+        }
+      }
+    });
   }
 }

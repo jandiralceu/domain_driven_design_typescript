@@ -35,6 +35,42 @@ export class Product {
     return this.#price;
   }
 
+  updatePrice(price: number): void {
+    this.#validation([
+      { fieldName: 'price', value: price, validations: { minLength: 0 } },
+    ]);
+
+    this.#price = price;
+  }
+
+  updateName(name: string): void {
+    this.#validation([
+      {
+        fieldName: 'name',
+        value: name,
+        validations: { isRequired: true, minLength: 2 },
+      },
+    ]);
+
+    this.#name = name;
+  }
+
+  clone(): Product {
+    return new Product(this.#id, this.#name, this.#price);
+  }
+
+  toString(): string {
+    return `id: ${this.#id} - name: ${this.#name} - price: ${this.#price}`;
+  }
+
+  isEqual(product: Product): boolean {
+    return (
+      this.#id === product.id &&
+      this.#name === product.name &&
+      this.#price === product.price
+    );
+  }
+
   #validation(values: Validation[]) {
     values.forEach(({ fieldName, value, ...props }) => {
       if (props?.validations?.isRequired) {
@@ -72,37 +108,5 @@ export class Product {
         }
       }
     });
-  }
-
-  updatePrice(price: number): void {
-    this.#validation([
-      { fieldName: 'price', value: price, validations: { minLength: 0 } },
-    ]);
-
-    this.#price = price;
-  }
-
-  updateName(name: string): void {
-    this.#validation([
-      {
-        fieldName: 'name',
-        value: name,
-        validations: { isRequired: true, minLength: 2 },
-      },
-    ]);
-
-    this.#name = name;
-  }
-
-  toString(): string {
-    return `id: ${this.#id} - name: ${this.#name} - price: ${this.#price}`;
-  }
-
-  isEqual(product: Product): boolean {
-    return (
-      this.#id === product.id &&
-      this.#name === product.name &&
-      this.#price === product.price
-    );
   }
 }

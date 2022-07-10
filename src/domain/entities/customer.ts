@@ -2,6 +2,13 @@ import { ValidationError } from '../errors';
 import { Validation } from './types';
 import { Address } from './address';
 
+type CopyCustomerProps = {
+  id?: string;
+  name?: string;
+  address?: Address;
+  isActive?: boolean;
+};
+
 export class Customer {
   #id: string;
 
@@ -97,9 +104,13 @@ export class Customer {
   }
 
   toString(): string {
-    return `Name: ${
+    return `id: ${this.#id}\nname: ${
       this.#name
-    } \n Address: ${this.#address.toString()} \n Active: ${this.isActive.toString()}`;
+    }\naddress: ${this.#address.toString()}\nactive: ${this.isActive.toString()}`;
+  }
+
+  clone(): Customer {
+    return new Customer(this.#id, this.#name, this.#address);
   }
 
   isEqual(customer: Customer): boolean {

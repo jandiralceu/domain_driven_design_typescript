@@ -59,7 +59,7 @@ describe('Product', () => {
   });
 
   it('should return true if products are equals', () => {
-    const productToCompare = mockProduct;
+    const productToCompare = mockProduct.clone();
 
     expect(mockProduct.isEqual(productToCompare)).toBe(true);
   });
