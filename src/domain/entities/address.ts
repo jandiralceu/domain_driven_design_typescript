@@ -79,7 +79,7 @@ export class Address {
   #validation(values: Validation[]) {
     values.forEach(({ fieldName, value, ...props }) => {
       if (props?.validations?.isRequired) {
-        if (typeof value == 'string') {
+        if (typeof value === 'string') {
           if (!value) {
             throw new ValidationError(`${fieldName} is required.`);
           }
