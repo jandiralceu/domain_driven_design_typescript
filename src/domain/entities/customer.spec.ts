@@ -103,4 +103,13 @@ describe('customer', () => {
       }`
     );
   });
+
+  it('should add reward', () => {
+    expect(mockCustomer.rewardPoints).toBe(0);
+
+    const reward = faker.datatype.number();
+    mockCustomer.updateRewardPoints(reward);
+
+    expect(mockCustomer.rewardPoints).toBe(reward);
+  });
 });

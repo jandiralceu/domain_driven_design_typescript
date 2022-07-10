@@ -2,13 +2,6 @@ import { ValidationError } from '../errors';
 import { Validation } from './types';
 import { Address } from './address';
 
-type CopyCustomerProps = {
-  id?: string;
-  name?: string;
-  address?: Address;
-  isActive?: boolean;
-};
-
 export class Customer {
   #id: string;
 
@@ -17,6 +10,8 @@ export class Customer {
   #address: Address;
 
   #isActive = true;
+
+  #rewardPoints = 0;
 
   constructor(id: string, name: string, address: Address) {
     this.#validate([
@@ -50,8 +45,56 @@ export class Customer {
     return this.#address;
   }
 
+  get rewardPoints(): number {
+    return this.#rewardPoints;
+  }
+
   get isActive(): boolean {
     return this.#isActive;
+  }
+
+  changeName(name: string): void {
+    this.#validate([
+      {
+        value: name,
+        fieldName: 'name',
+        validations: { isRequired: true, minLength: 4 },
+      },
+    ]);
+    this.#name = name;
+  }
+
+  changeAddress(address: Address): void {
+    this.#validate([
+      {
+        fieldName: 'address',
+        value: address,
+        validations: { isRequired: true },
+      },
+    ]);
+    this.#address = address;
+  }
+
+  updateRewardPoints(points: number) {
+    this.#rewardPoints += points;
+  }
+
+  toString(): string {
+    return `id: ${this.#id}\nname: ${
+      this.#name
+    }\naddress: ${this.#address.toString()}\nactive: ${this.isActive.toString()}`;
+  }
+
+  clone(): Customer {
+    return new Customer(this.#id, this.#name, this.#address);
+  }
+
+  isEqual(customer: Customer): boolean {
+    return (
+      this.#id === customer.id &&
+      this.#name === customer.name &&
+      this.#address.isEqual(customer.address)
+    );
   }
 
   #validate(values: Validation[]): void {
@@ -79,45 +122,5 @@ export class Customer {
         }
       }
     });
-  }
-
-  changeName(name: string): void {
-    this.#validate([
-      {
-        value: name,
-        fieldName: 'name',
-        validations: { isRequired: true, minLength: 4 },
-      },
-    ]);
-    this.#name = name;
-  }
-
-  changeAddress(address: Address): void {
-    this.#validate([
-      {
-        fieldName: 'address',
-        value: address,
-        validations: { isRequired: true },
-      },
-    ]);
-    this.#address = address;
-  }
-
-  toString(): string {
-    return `id: ${this.#id}\nname: ${
-      this.#name
-    }\naddress: ${this.#address.toString()}\nactive: ${this.isActive.toString()}`;
-  }
-
-  clone(): Customer {
-    return new Customer(this.#id, this.#name, this.#address);
-  }
-
-  isEqual(customer: Customer): boolean {
-    return (
-      this.#id === customer.id &&
-      this.#name === customer.name &&
-      this.#address.isEqual(customer.address)
-    );
   }
 }

@@ -4,6 +4,7 @@ import { Address } from './address';
 
 describe('Address', () => {
   let mockAddress: Address;
+
   beforeEach(() => {
     mockAddress = new Address(
       faker.address.street(),

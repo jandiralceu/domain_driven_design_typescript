@@ -28,6 +28,7 @@
     "@swc/core": "^1.2.210",
     "@swc/jest": "^0.2.21",
     "@types/jest": "^28.1.4",
+    "@types/uuid": "^8.3.4",
     "@typescript-eslint/eslint-plugin": "^5.30.5",
     "@typescript-eslint/parser": "^5.30.5",
     "eslint": "^8.19.0",
@@ -41,5 +42,8 @@
     "ts-jest": "^28.0.5",
     "ts-node": "^10.8.2",
     "typescript": "^4.7.4"
+  },
+  "dependencies": {
+    "uuid": "^8.3.2"
   }
 }
