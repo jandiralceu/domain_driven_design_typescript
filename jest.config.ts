@@ -4,15 +4,6 @@
  */
 
 export default {
-  // All imported modules in your tests should be mocked automatically
-  // automock: false,
-
-  // Stop running tests after `n` failures
-  // bail: 0,
-
-  // The directory where Jest should store its cached dependency information
-  // cacheDirectory: "/private/var/folders/92/9g_634j111j5p6q_j091w01c0000gn/T/jest_dx",
-
   clearMocks: true,
   collectCoverage: true,
   collectCoverageFrom: [
@@ -24,6 +15,9 @@ export default {
 
   // Indicates which provider should be used to instrument code for coverage
   coverageProvider: "v8",
+  moduleNameMapper: {
+    '@/(.*)': '<rootDir>/src/$1',
+  },
 
   // A list of reporter names that Jest uses when writing coverage reports
   // coverageReporters: [
