@@ -75,6 +75,14 @@ describe('CustomerRepository', () => {
     expect(foundedCustomer.isEqual(mockCustomer)).toStrictEqual(true);
   });
 
+  it('should throw an error if customer not find', async () => {
+    await mockCustomerRepository.create(mockCustomer);
+
+    await expect(() =>
+      mockCustomerRepository.find(faker.datatype.uuid())
+    ).rejects.toThrow('Customer not found.');
+  });
+
   it('should find all customers', async () => {
     const customers = Array.from({ length: 5 }, () => {
       return new Customer(
