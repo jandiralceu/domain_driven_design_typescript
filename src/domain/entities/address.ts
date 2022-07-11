@@ -4,7 +4,7 @@ import { ValidationError } from '../errors';
 export class Address {
   #street: string;
 
-  #number: string;
+  #streetNumber: string;
 
   #city: string;
 
@@ -36,7 +36,7 @@ export class Address {
     ]);
 
     this.#street = street;
-    this.#number = streetNumber;
+    this.#streetNumber = streetNumber;
     this.#city = city;
     this.#zipCode = zipCode;
   }
@@ -46,7 +46,7 @@ export class Address {
   }
 
   get streetNumber(): string {
-    return this.#number;
+    return this.#streetNumber;
   }
 
   get city(): string {
@@ -58,11 +58,16 @@ export class Address {
   }
 
   clone(): Address {
-    return new Address(this.#street, this.#number, this.#city, this.zipCode);
+    return new Address(
+      this.#street,
+      this.#streetNumber,
+      this.#city,
+      this.#zipCode
+    );
   }
 
   toString() {
-    return `street: ${this.#street} - number: ${this.#number} - city: ${
+    return `street: ${this.#street} - number: ${this.#streetNumber} - city: ${
       this.#city
     } - ZipCode: ${this.#zipCode}`;
   }
@@ -70,7 +75,7 @@ export class Address {
   isEqual(address: Address) {
     return (
       this.#street === address.street &&
-      this.#number === address.streetNumber &&
+      this.#streetNumber === address.streetNumber &&
       this.#city === address.city &&
       this.#zipCode === address.zipCode
     );

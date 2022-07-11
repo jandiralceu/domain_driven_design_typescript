@@ -9,6 +9,7 @@ export default {
   collectCoverageFrom: [
     '<rootDir>/src/**/*.ts',
     '!<rootDir>/src/domain/entities/types/**/*',
+    '!<rootDir>/src/domain/repositories/**/*',
     '!<rootDir>/src/**/index.ts'
   ],
   coverageDirectory: 'coverage',

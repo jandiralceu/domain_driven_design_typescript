@@ -1,5 +1,5 @@
 import { ValidationError } from '../errors';
-import { Validation } from './types';
+import { TObject, Validation } from './types';
 import { Address } from './address';
 
 export class Customer {
@@ -9,11 +9,17 @@ export class Customer {
 
   #address: Address;
 
-  #isActive = true;
+  #isActive: boolean;
 
-  #rewardPoints = 0;
+  #rewardPoints: number;
 
-  constructor(id: string, name: string, address: Address) {
+  constructor(
+    id: string,
+    name: string,
+    address: Address,
+    isActive = true,
+    rewardPoints = 0
+  ) {
     this.#validate([
       { fieldName: 'id', value: id, validations: { isRequired: true } },
       {
@@ -31,6 +37,8 @@ export class Customer {
     this.#id = id;
     this.#name = name;
     this.#address = address;
+    this.#isActive = isActive;
+    this.#rewardPoints = rewardPoints;
   }
 
   get id(): string {
@@ -86,7 +94,13 @@ export class Customer {
   }
 
   clone(): Customer {
-    return new Customer(this.#id, this.#name, this.#address);
+    return new Customer(
+      this.#id,
+      this.#name,
+      this.#address,
+      this.#isActive,
+      this.#rewardPoints
+    );
   }
 
   isEqual(customer: Customer): boolean {
@@ -122,5 +136,20 @@ export class Customer {
         }
       }
     });
+  }
+
+  static fromJson(json: TObject): Customer {
+    return new Customer(
+      json.id as string,
+      json.name as string,
+      new Address(
+        json.street as string,
+        json.streetNumber as string,
+        json.city as string,
+        json.zipCode as string
+      ),
+      json.isActive,
+      json.rewardPoints
+    );
   }
 }
