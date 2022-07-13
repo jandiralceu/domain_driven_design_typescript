@@ -6,9 +6,9 @@
   "scripts": {
     "build": "npx tsc",
     "test": "jest --no-cache --runInBand",
-    "test:watch": "jest --no-cache --runInBand --watch",
-    "test:staged": "jest --no-cache --runInBand --findRelatedTests",
-    "test:ci": "jest --no-cache --runInBand --coverage",
+    "test:watch": "npm run test -- --watch",
+    "test:staged": "npm run test -- --findRelatedTests",
+    "test:ci": "npm run test -- --coverage",
     "lint:eslint": "eslint --ext .ts --fix ./src",
     "lint:prettier": "prettier --write ./src",
     "lint:check": "prettier --check ./src"

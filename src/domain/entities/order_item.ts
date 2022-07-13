@@ -1,5 +1,5 @@
 import { ValidationError } from '../errors';
-import { Validation } from './types';
+import { TObject, Validation } from './types';
 
 export class OrderItem {
   #id: string;
@@ -56,6 +56,10 @@ export class OrderItem {
 
   get price(): number {
     return this.#unitPrice * this.#quantity;
+  }
+
+  get unitPrice(): number {
+    return this.#unitPrice;
   }
 
   get quantity(): number {
@@ -127,5 +131,15 @@ export class OrderItem {
         }
       }
     });
+  }
+
+  static toJson(json: TObject) {
+    return new OrderItem(
+      json.id,
+      json.name,
+      json.price,
+      json.product_id,
+      json.quantity
+    );
   }
 }

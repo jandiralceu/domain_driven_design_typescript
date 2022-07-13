@@ -24,11 +24,7 @@ export class ProductRepository implements IProductRepository {
         rejectOnEmpty: true,
       });
 
-      return new Product(
-        result?.id as string,
-        result?.name as string,
-        result?.price as number
-      );
+      return Product.fromJson(result);
     } catch (_) {
       throw new NotFound('Product not found.');
     }
@@ -37,10 +33,7 @@ export class ProductRepository implements IProductRepository {
   async findAll(): Promise<Product[]> {
     try {
       const result = await ProductModel.findAll();
-
-      return result.map(
-        (product) => new Product(product.id, product.name, product.price)
-      );
+      return result.map(Product.fromJson);
     } catch (_) {
       throw new Error('Something went wrong, please, try again later.');
     }

@@ -11,22 +11,21 @@ describe('ProductRepository', () => {
   let mockProductRepository: ProductRepository;
 
   beforeEach(async () => {
-    mockProduct = new Product(
-      faker.datatype.uuid(),
-      faker.commerce.productName(),
-      faker.datatype.number({ min: 1, max: 500 })
-    );
-
     sequelize = new Sequelize({
       dialect: 'sqlite',
-      storage: 'memory',
+      storage: ':memory',
       logging: false,
-      sync: { force: true },
+      sync: { force: false },
     });
 
     sequelize.addModels([ProductModel]);
     await sequelize.sync();
 
+    mockProduct = new Product(
+      faker.datatype.uuid(),
+      faker.commerce.productName(),
+      faker.datatype.number({ min: 1, max: 500 })
+    );
     mockProductRepository = new ProductRepository();
   });
 

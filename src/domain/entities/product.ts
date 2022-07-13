@@ -1,5 +1,5 @@
 import { ValidationError } from '../errors';
-import { Validation } from './types';
+import { TObject, Validation } from './types';
 
 export class Product {
   #id: string;
@@ -108,5 +108,9 @@ export class Product {
         }
       }
     });
+  }
+
+  static fromJson(json: TObject) {
+    return new Product(json.id, json.name, json.price);
   }
 }

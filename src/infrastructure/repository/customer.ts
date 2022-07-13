@@ -1,4 +1,4 @@
-import { Customer, TObject } from '@/domain/entities';
+import { Customer } from '@/domain/entities';
 import { ICustomerRepository } from '@/domain/repositories';
 
 import { CustomerModel } from '../db';
@@ -28,7 +28,7 @@ export class CustomerRepository implements ICustomerRepository {
         where: { id },
         rejectOnEmpty: true,
       });
-      return Customer.fromJson(result as TObject);
+      return Customer.fromJson(result);
     } catch (_) {
       throw new NotFound('Customer not found.');
     }

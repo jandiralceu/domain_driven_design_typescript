@@ -1,5 +1,5 @@
 import { OrderItem } from './order_item';
-import { Validation } from './types';
+import { TObject, Validation } from './types';
 import { ValidationError } from '../errors';
 
 export class Order {
@@ -69,7 +69,9 @@ export class Order {
       this.#id === order.id &&
       this.#customerId === order.customerId &&
       this.totalItems === order.totalItems &&
-      this.#items.every((item, index) => item.isEqual(order.items[index]))
+      this.#items.every((orderItem, index) =>
+        orderItem.isEqual(order.items[index])
+      )
     );
   }
 
@@ -91,5 +93,13 @@ export class Order {
         }
       }
     });
+  }
+
+  static toJson(json: TObject) {
+    return new Order(
+      json.id,
+      json.customer_id,
+      json.items.map(OrderItem.toJson)
+    );
   }
 }

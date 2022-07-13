@@ -140,14 +140,9 @@ export class Customer {
 
   static fromJson(json: TObject): Customer {
     return new Customer(
-      json.id as string,
-      json.name as string,
-      new Address(
-        json.street as string,
-        json.streetNumber as string,
-        json.city as string,
-        json.zipCode as string
-      ),
+      json.id,
+      json.name,
+      new Address(json.street, json.streetNumber, json.city, json.zipCode),
       json.isActive,
       json.rewardPoints
     );

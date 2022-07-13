@@ -24,7 +24,7 @@ describe('CustomerRepository', () => {
 
     sequelize = new Sequelize({
       dialect: 'sqlite',
-      storage: 'memory',
+      storage: ':memory',
       logging: false,
       sync: { force: true },
     });
