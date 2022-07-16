@@ -49,6 +49,14 @@ export class Order {
     return this.#items.reduce((acc, item) => acc + item.price, 0);
   }
 
+  addItem(item: OrderItem) {
+    this.#items.push(item);
+  }
+
+  removeItem(id: string) {
+    this.#items = this.#items.filter((item) => item.id !== id);
+  }
+
   toString(): string {
     let printItems = '';
     this.#items.forEach((item) => {
@@ -95,7 +103,7 @@ export class Order {
     });
   }
 
-  static toJson(json: TObject) {
+  static fromJson(json: TObject) {
     return new Order(
       json.id,
       json.customer_id,

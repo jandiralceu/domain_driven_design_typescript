@@ -2,7 +2,9 @@ import { Product } from '@/domain/entities';
 import { IProductRepository } from '@/domain/repositories';
 
 import { ProductModel } from '../db';
-import { NotFound } from '@/domain/errors';
+import { NotFoundError, UnexpectedError } from '@/domain/errors';
+
+const DEFAULT_ERROR_MESSAGE = 'Something went wrong, please, try again later.';
 
 export class ProductRepository implements IProductRepository {
   async create(product: Product): Promise<void> {
@@ -12,8 +14,8 @@ export class ProductRepository implements IProductRepository {
         name: product.name,
         price: product.price,
       });
-    } catch (_) {
-      throw new Error('Something went wrong, please, try again later.');
+    } catch (error: any) {
+      throw new UnexpectedError(error?.message ?? DEFAULT_ERROR_MESSAGE);
     }
   }
 
@@ -21,12 +23,13 @@ export class ProductRepository implements IProductRepository {
     try {
       const result = await ProductModel.findOne({
         where: { id },
-        rejectOnEmpty: true,
+        rejectOnEmpty: new NotFoundError('Product not found.'),
       });
 
       return Product.fromJson(result);
-    } catch (_) {
-      throw new NotFound('Product not found.');
+    } catch (error: any) {
+      if (error instanceof NotFoundError) throw error;
+      throw new UnexpectedError(error?.message ?? DEFAULT_ERROR_MESSAGE);
     }
   }
 
@@ -34,8 +37,8 @@ export class ProductRepository implements IProductRepository {
     try {
       const result = await ProductModel.findAll();
       return result.map(Product.fromJson);
-    } catch (_) {
-      throw new Error('Something went wrong, please, try again later.');
+    } catch (error: any) {
+      throw new UnexpectedError(error?.message ?? DEFAULT_ERROR_MESSAGE);
     }
   }
 
@@ -45,8 +48,8 @@ export class ProductRepository implements IProductRepository {
         { name: product.name, price: product.price },
         { where: { id: product.id } }
       );
-    } catch (_) {
-      throw new Error('Something went wrong, please, try again later.');
+    } catch (error: any) {
+      throw new UnexpectedError(error?.message ?? DEFAULT_ERROR_MESSAGE);
     }
   }
 }

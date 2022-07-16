@@ -20,6 +20,7 @@ import {
   OrderModel,
   ProductModel,
 } from '@/infrastructure/db';
+import { NotFoundError } from '@/domain/errors';
 
 describe('CustomerRepository', () => {
   let sequelize: Sequelize;
@@ -89,8 +90,16 @@ describe('CustomerRepository', () => {
       where: { id: order.id },
       include: ['items'],
     });
-    const savedOrder = Order.toJson(orderModel?.toJSON() as TObject);
+    const savedOrder = Order.fromJson(orderModel?.toJSON() as TObject);
 
     expect(savedOrder.isEqual(order)).toBe(true);
   });
+
+  it('should throw an error if find by an invalid order', async () => {
+    await expect(() =>
+      mockOrderRepository.find(faker.datatype.uuid())
+    ).rejects.toThrow(NotFoundError);
+  });
+
+  it.skip('should return an order', () => {});
 });

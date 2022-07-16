@@ -4,6 +4,7 @@ import { faker } from '@faker-js/faker';
 import { Address, Customer, TObject } from '@/domain/entities';
 import { CustomerModel } from '../db';
 import { CustomerRepository } from './customer';
+import { NotFoundError } from '@/domain/errors';
 
 describe('CustomerRepository', () => {
   let sequelize: Sequelize;
@@ -72,15 +73,13 @@ describe('CustomerRepository', () => {
 
     const foundedCustomer = await mockCustomerRepository.find(mockCustomer.id);
 
-    expect(foundedCustomer.isEqual(mockCustomer)).toStrictEqual(true);
+    expect(foundedCustomer.isEqual(mockCustomer)).toBe(true);
   });
 
-  it('should throw an error if customer not find', async () => {
-    await mockCustomerRepository.create(mockCustomer);
-
+  it('should throw an error if find by a invalid customer', async () => {
     await expect(() =>
       mockCustomerRepository.find(faker.datatype.uuid())
-    ).rejects.toThrow('Customer not found.');
+    ).rejects.toThrow(NotFoundError);
   });
 
   it('should find all customers', async () => {

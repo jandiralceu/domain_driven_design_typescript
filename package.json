@@ -1,7 +1,7 @@
 {
   "name": "entities",
   "version": "1.0.0",
-  "description": "",
+  "description": "DDD course from Fullcycle",
   "main": "index.js",
   "scripts": {
     "build": "npx tsc",
@@ -18,9 +18,10 @@
     "domain driven design",
     "javascript",
     "typescript",
-    "architecture"
+    "architecture",
+    "fullcycle"
   ],
-  "author": "",
+  "author": "Jandir A. Cutabiala <me@jandir.co, jandiralceu@gmail.com>",
   "license": "ISC",
   "devDependencies": {
     "@faker-js/faker": "^7.3.0",

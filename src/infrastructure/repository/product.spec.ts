@@ -15,7 +15,7 @@ describe('ProductRepository', () => {
       dialect: 'sqlite',
       storage: ':memory',
       logging: false,
-      sync: { force: false },
+      sync: { force: true },
     });
 
     sequelize.addModels([ProductModel]);
