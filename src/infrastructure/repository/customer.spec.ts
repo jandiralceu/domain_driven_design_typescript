@@ -25,7 +25,7 @@ describe('CustomerRepository', () => {
 
     sequelize = new Sequelize({
       dialect: 'sqlite',
-      storage: 'memory',
+      storage: ':memory',
       logging: false,
       sync: { force: true },
     });
@@ -36,11 +36,8 @@ describe('CustomerRepository', () => {
     mockCustomerRepository = new CustomerRepository();
   });
 
-  // afterEach(async () => {
-  //   await sequelize.close();
-  // });
   afterAll(async () => {
-    await sequelize.truncate({});
+    await sequelize.truncate();
   });
 
   it('should create a customer', async () => {

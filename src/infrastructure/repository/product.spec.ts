@@ -19,7 +19,7 @@ describe('ProductRepository', () => {
 
     sequelize = new Sequelize({
       dialect: 'sqlite',
-      storage: 'memory',
+      storage: ':memory',
       logging: false,
       sync: { force: true },
     });
@@ -30,12 +30,8 @@ describe('ProductRepository', () => {
     mockProductRepository = new ProductRepository();
   });
 
-  // afterEach(async () => {
-  //   await sequelize.close();
-  // });
-
   afterAll(async () => {
-    await sequelize.truncate({});
+    await sequelize.truncate();
   });
 
   it('should create a product', async () => {

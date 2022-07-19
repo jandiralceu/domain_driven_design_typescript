@@ -35,7 +35,7 @@ describe('CustomerRepository', () => {
   beforeEach(async () => {
     sequelize = new Sequelize({
       dialect: 'sqlite',
-      storage: 'memory',
+      storage: ':memory',
       logging: false,
       sync: { force: true },
     });
@@ -86,7 +86,7 @@ describe('CustomerRepository', () => {
   });
 
   afterAll(async () => {
-    await sequelize.truncate({});
+    await sequelize.truncate();
   });
 
   it('should create a new order', async () => {
