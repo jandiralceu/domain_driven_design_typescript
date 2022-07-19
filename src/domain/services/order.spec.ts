@@ -1,5 +1,10 @@
 import { faker } from '@faker-js/faker';
-import { OrderEntity, OrderItemEntity, CustomerEntity, AddressEntity } from '../entities';
+import {
+  OrderEntity,
+  OrderItemEntity,
+  CustomerEntity,
+  AddressEntity,
+} from '../entities';
 import { OrderService } from './order';
 
 describe('OrderService', () => {

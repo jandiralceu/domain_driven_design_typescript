@@ -11,7 +11,8 @@
     "test:ci": "npm run test -- --coverage",
     "lint:eslint": "eslint --ext .ts --fix ./src",
     "lint:prettier": "prettier --write ./src",
-    "lint:check": "prettier --check ./src"
+    "lint:check": "prettier --check ./src",
+    "prepare": "husky install"
   },
   "keywords": [
     "ddd",
@@ -34,13 +35,16 @@
     "@types/validator": "^13.7.4",
     "@typescript-eslint/eslint-plugin": "^5.30.5",
     "@typescript-eslint/parser": "^5.30.5",
+    "commitizen": "^4.2.5",
     "eslint": "^8.19.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-airbnb-typescript": "^17.0.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-prettier": "^4.2.1",
+    "husky": "^8.0.0",
     "jest": "^28.1.2",
+    "lint-staged": "^13.0.3",
     "prettier": "2.7.1",
     "ts-jest": "^28.0.5",
     "ts-node": "^10.8.2",
@@ -52,5 +56,12 @@
     "sequelize-typescript": "^2.1.3",
     "sqlite3": "^5.0.8",
     "uuid": "^8.3.2"
+  },
+  "lint-staged": {
+    "*.{js,ts}": [
+      "npm run lint:eslint",
+      "npm run lint:prettier",
+      "npm run test:staged"
+    ]
   }
 }

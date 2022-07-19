@@ -9,7 +9,10 @@ export class OrderService {
     );
   }
 
-  static placeOrder(customer: CustomerEntity, items: OrderItemEntity[]): OrderEntity {
+  static placeOrder(
+    customer: CustomerEntity,
+    items: OrderItemEntity[]
+  ): OrderEntity {
     const order = new OrderEntity(uuid(), customer.id, items);
     customer.updateRewardPoints(order.total / 2);
 
