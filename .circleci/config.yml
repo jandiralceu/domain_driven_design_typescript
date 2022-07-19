@@ -9,4 +9,4 @@ jobs:
           name: The first step
           command: |
             echo 'Hello World!'
-            echo 'This is the delivery pipeline
+            echo 'This is the delivery pipeline'
