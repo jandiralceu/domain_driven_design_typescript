@@ -1,4 +1,4 @@
-import { Product } from '@/domain/entities';
+import { ProductEntity, TObject } from '@/domain/entities';
 import { IProductRepository } from '@/domain/repositories';
 
 import { ProductModel } from '../db';
@@ -7,7 +7,7 @@ import { NotFoundError, UnexpectedError } from '@/domain/errors';
 const DEFAULT_ERROR_MESSAGE = 'Something went wrong, please, try again later.';
 
 export class ProductRepository implements IProductRepository {
-  async create(product: Product): Promise<void> {
+  async create(product: ProductEntity): Promise<void> {
     try {
       await ProductModel.create({
         id: product.id,
@@ -19,30 +19,30 @@ export class ProductRepository implements IProductRepository {
     }
   }
 
-  async find(id: string): Promise<Product> {
+  async find(id: string): Promise<ProductEntity> {
     try {
       const result = await ProductModel.findOne({
         where: { id },
         rejectOnEmpty: new NotFoundError('Product not found.'),
       });
 
-      return Product.fromJson(result);
+      return ProductRepository.toProductEntity(result);
     } catch (error: any) {
       if (error instanceof NotFoundError) throw error;
       throw new UnexpectedError(error?.message ?? DEFAULT_ERROR_MESSAGE);
     }
   }
 
-  async findAll(): Promise<Product[]> {
+  async findAll(): Promise<ProductEntity[]> {
     try {
       const result = await ProductModel.findAll();
-      return result.map(Product.fromJson);
+      return result.map(ProductRepository.toProductEntity);
     } catch (error: any) {
       throw new UnexpectedError(error?.message ?? DEFAULT_ERROR_MESSAGE);
     }
   }
 
-  async update(product: Product): Promise<void> {
+  async update(product: ProductEntity): Promise<void> {
     try {
       await ProductModel.update(
         { name: product.name, price: product.price },
@@ -51,5 +51,9 @@ export class ProductRepository implements IProductRepository {
     } catch (error: any) {
       throw new UnexpectedError(error?.message ?? DEFAULT_ERROR_MESSAGE);
     }
+  }
+
+  static toProductEntity(json: TObject) {
+    return new ProductEntity(json.id, json.name, json.price);
   }
 }

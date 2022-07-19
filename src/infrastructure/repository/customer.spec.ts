@@ -1,21 +1,21 @@
 import { Sequelize } from 'sequelize-typescript';
 import { faker } from '@faker-js/faker';
 
-import { Address, Customer, TObject } from '@/domain/entities';
+import { AddressEntity, CustomerEntity, TObject } from '@/domain/entities';
 import { CustomerModel } from '../db';
 import { CustomerRepository } from './customer';
 import { NotFoundError } from '@/domain/errors';
 
 describe('CustomerRepository', () => {
   let sequelize: Sequelize;
-  let mockCustomer: Customer;
+  let mockCustomer: CustomerEntity;
   let mockCustomerRepository: CustomerRepository;
 
   beforeEach(async () => {
-    mockCustomer = new Customer(
+    mockCustomer = new CustomerEntity(
       faker.datatype.uuid(),
       faker.name.findName(),
-      new Address(
+      new AddressEntity(
         faker.address.street(),
         faker.address.buildingNumber(),
         faker.address.city(),
@@ -25,7 +25,7 @@ describe('CustomerRepository', () => {
 
     sequelize = new Sequelize({
       dialect: 'sqlite',
-      storage: ':memory',
+      storage: 'memory',
       logging: false,
       sync: { force: true },
     });
@@ -36,8 +36,11 @@ describe('CustomerRepository', () => {
     mockCustomerRepository = new CustomerRepository();
   });
 
-  afterEach(async () => {
-    await sequelize.close();
+  // afterEach(async () => {
+  //   await sequelize.close();
+  // });
+  afterAll(async () => {
+    await sequelize.truncate({});
   });
 
   it('should create a customer', async () => {
@@ -47,7 +50,9 @@ describe('CustomerRepository', () => {
       where: { id: mockCustomer.id },
     });
 
-    const customer = Customer.fromJson(result?.toJSON() as TObject);
+    const customer = CustomerRepository.toCustomerEntity(
+      result?.toJSON() as TObject
+    );
 
     expect(customer.isEqual(mockCustomer)).toBe(true);
   });
@@ -84,10 +89,10 @@ describe('CustomerRepository', () => {
 
   it('should find all customers', async () => {
     const customers = Array.from({ length: 5 }, () => {
-      return new Customer(
+      return new CustomerEntity(
         faker.datatype.uuid(),
         faker.commerce.productName(),
-        new Address(
+        new AddressEntity(
           faker.address.street(),
           faker.address.buildingNumber(),
           faker.address.city(),

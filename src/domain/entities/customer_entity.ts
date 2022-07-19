@@ -1,13 +1,13 @@
 import { ValidationError } from '../errors';
-import { TObject, Validation } from './types';
-import { Address } from './address';
+import { Validation } from './types';
+import { AddressEntity } from './address_entity';
 
-export class Customer {
+export class CustomerEntity {
   #id: string;
 
   #name: string;
 
-  #address: Address;
+  #address: AddressEntity;
 
   #isActive: boolean;
 
@@ -16,7 +16,7 @@ export class Customer {
   constructor(
     id: string,
     name: string,
-    address: Address,
+    address: AddressEntity,
     isActive = true,
     rewardPoints = 0
   ) {
@@ -49,7 +49,7 @@ export class Customer {
     return this.#name;
   }
 
-  get address(): Address {
+  get address(): AddressEntity {
     return this.#address;
   }
 
@@ -72,7 +72,7 @@ export class Customer {
     this.#name = name;
   }
 
-  changeAddress(address: Address): void {
+  changeAddress(address: AddressEntity): void {
     this.#validate([
       {
         fieldName: 'address',
@@ -93,8 +93,8 @@ export class Customer {
     }\naddress: ${this.#address.toString()}\nactive: ${this.isActive.toString()}`;
   }
 
-  clone(): Customer {
-    return new Customer(
+  clone(): CustomerEntity {
+    return new CustomerEntity(
       this.#id,
       this.#name,
       this.#address,
@@ -103,7 +103,7 @@ export class Customer {
     );
   }
 
-  isEqual(customer: Customer): boolean {
+  isEqual(customer: CustomerEntity): boolean {
     return (
       this.#id === customer.id &&
       this.#name === customer.name &&
@@ -114,7 +114,7 @@ export class Customer {
   #validate(values: Validation[]): void {
     values.forEach(({ fieldName, value, ...props }) => {
       if (props?.validations?.isRequired) {
-        if (typeof value == 'string' || value instanceof Address) {
+        if (typeof value == 'string' || value instanceof AddressEntity) {
           if (!value) {
             throw new ValidationError(
               `${fieldName.toLowerCase()} is required.`
@@ -136,15 +136,5 @@ export class Customer {
         }
       }
     });
-  }
-
-  static fromJson(json: TObject): Customer {
-    return new Customer(
-      json.id,
-      json.name,
-      new Address(json.street, json.streetNumber, json.city, json.zipCode),
-      json.isActive,
-      json.rewardPoints
-    );
   }
 }

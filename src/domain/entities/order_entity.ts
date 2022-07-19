@@ -1,15 +1,15 @@
-import { OrderItem } from './order_item';
-import { TObject, Validation } from './types';
+import { OrderItemEntity } from './order_item_entity';
+import { Validation } from './types';
 import { ValidationError } from '../errors';
 
-export class Order {
+export class OrderEntity {
   #id: string;
 
   #customerId: string;
 
-  #items: OrderItem[];
+  #items: OrderItemEntity[];
 
-  constructor(id: string, customerId: string, items: OrderItem[]) {
+  constructor(id: string, customerId: string, items: OrderItemEntity[]) {
     this.#validation([
       { fieldName: 'id', value: id, validations: { isRequired: true } },
       {
@@ -37,7 +37,7 @@ export class Order {
     return this.#customerId;
   }
 
-  get items(): OrderItem[] {
+  get items(): OrderItemEntity[] {
     return this.#items;
   }
 
@@ -49,7 +49,7 @@ export class Order {
     return this.#items.reduce((acc, item) => acc + item.price, 0);
   }
 
-  addItem(item: OrderItem) {
+  addItem(item: OrderItemEntity) {
     this.#items.push(item);
   }
 
@@ -68,11 +68,24 @@ export class Order {
     }\nitems:\n${printItems}`;
   }
 
-  clone(): Order {
-    return new Order(this.#id, this.#customerId, this.#items);
+  clone(): OrderEntity {
+    return new OrderEntity(
+      this.#id,
+      this.#customerId,
+      this.#items.map(
+        (item) =>
+          new OrderItemEntity(
+            item.id,
+            item.name,
+            item.unitPrice,
+            item.productId,
+            item.quantity
+          )
+      )
+    );
   }
 
-  isEqual(order: Order): boolean {
+  isEqual(order: OrderEntity): boolean {
     return (
       this.#id === order.id &&
       this.#customerId === order.customerId &&
@@ -101,13 +114,5 @@ export class Order {
         }
       }
     });
-  }
-
-  static fromJson(json: TObject) {
-    return new Order(
-      json.id,
-      json.customer_id,
-      json.items.map(OrderItem.toJson)
-    );
   }
 }

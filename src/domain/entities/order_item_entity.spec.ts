@@ -1,15 +1,15 @@
 import { faker } from '@faker-js/faker';
 
-import { OrderItem } from './order_item';
+import { OrderItemEntity } from './order_item_entity';
 
-describe('OrderItem', () => {
-  let mockOrderItem: OrderItem;
+describe('OrderItemEntity', () => {
+  let mockOrderItem: OrderItemEntity;
   let mockNegativePrice: number;
   let mockQuantity: number;
 
   beforeEach(() => {
     mockQuantity = faker.datatype.number({ min: 1, max: 20 });
-    mockOrderItem = new OrderItem(
+    mockOrderItem = new OrderItemEntity(
       faker.datatype.uuid(),
       faker.commerce.product(),
       faker.datatype.float(),
@@ -22,7 +22,7 @@ describe('OrderItem', () => {
   it('should throw an error if "id" is empty', () => {
     expect(
       () =>
-        new OrderItem(
+        new OrderItemEntity(
           '',
           faker.commerce.product(),
           faker.datatype.float(),
@@ -35,7 +35,7 @@ describe('OrderItem', () => {
   it('should throw an error if "name" is empty', () => {
     expect(
       () =>
-        new OrderItem(
+        new OrderItemEntity(
           faker.datatype.uuid(),
           '',
           faker.datatype.float(),
@@ -50,7 +50,7 @@ describe('OrderItem', () => {
 
     expect(
       () =>
-        new OrderItem(
+        new OrderItemEntity(
           faker.datatype.uuid(),
           productName,
           faker.datatype.float(),
@@ -65,7 +65,7 @@ describe('OrderItem', () => {
   it('should throw an error if "price" is less than 0', () => {
     expect(
       () =>
-        new OrderItem(
+        new OrderItemEntity(
           faker.datatype.uuid(),
           faker.commerce.product(),
           mockNegativePrice,
@@ -81,7 +81,7 @@ describe('OrderItem', () => {
     const quantity = faker.datatype.number({ min: -99, max: 0 });
     expect(
       () =>
-        new OrderItem(
+        new OrderItemEntity(
           faker.datatype.uuid(),
           faker.commerce.product(),
           faker.datatype.float(),
@@ -96,7 +96,7 @@ describe('OrderItem', () => {
   it('should throw an error if "productId" is less than 1', () => {
     expect(
       () =>
-        new OrderItem(
+        new OrderItemEntity(
           faker.datatype.uuid(),
           faker.commerce.product(),
           faker.datatype.float(),
@@ -107,7 +107,7 @@ describe('OrderItem', () => {
   });
 
   it('should return false if order item are different', () => {
-    const orderItemToCompare = new OrderItem(
+    const orderItemToCompare = new OrderItemEntity(
       faker.datatype.uuid(),
       faker.commerce.product(),
       faker.datatype.float(),
@@ -154,7 +154,7 @@ describe('OrderItem', () => {
     'should create a OrderItem with default quantity, if no quantity has' +
       ' passed',
     () => {
-      const orderItem = new OrderItem(
+      const orderItem = new OrderItemEntity(
         faker.datatype.uuid(),
         faker.commerce.product(),
         faker.datatype.float(),

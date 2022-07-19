@@ -1,12 +1,12 @@
 import { faker } from '@faker-js/faker';
 
-import { Address } from './address';
+import { AddressEntity } from './address_entity';
 
-describe('Address', () => {
-  let mockAddress: Address;
+describe('AddressEntity', () => {
+  let mockAddress: AddressEntity;
 
   beforeEach(() => {
-    mockAddress = new Address(
+    mockAddress = new AddressEntity(
       faker.address.street(),
       faker.address.buildingNumber(),
       faker.address.city(),
@@ -17,7 +17,7 @@ describe('Address', () => {
   it('should throw an error if "id" is empty', () => {
     expect(
       () =>
-        new Address(
+        new AddressEntity(
           '',
           faker.address.buildingNumber(),
           faker.address.city(),
@@ -29,7 +29,7 @@ describe('Address', () => {
   it('should throw an error if "streetNumber" is empty', () => {
     expect(
       () =>
-        new Address(
+        new AddressEntity(
           faker.address.street(),
           '',
           faker.address.city(),
@@ -41,7 +41,7 @@ describe('Address', () => {
   it('should throw an error if "city" is empty', () => {
     expect(
       () =>
-        new Address(
+        new AddressEntity(
           faker.address.street(),
           faker.address.buildingNumber(),
           '',
@@ -53,7 +53,7 @@ describe('Address', () => {
   it('should throw an error if "zipCode" is empty', () => {
     expect(
       () =>
-        new Address(
+        new AddressEntity(
           faker.address.street(),
           faker.address.buildingNumber(),
           faker.address.city(),
@@ -63,7 +63,7 @@ describe('Address', () => {
   });
 
   it('should return false if Addresses are different', () => {
-    const address = new Address(
+    const address = new AddressEntity(
       faker.address.street(),
       faker.address.buildingNumber(),
       faker.address.city(),

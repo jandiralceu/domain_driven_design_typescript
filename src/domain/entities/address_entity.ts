@@ -1,7 +1,7 @@
 import { Validation } from './types';
 import { ValidationError } from '../errors';
 
-export class Address {
+export class AddressEntity {
   #street: string;
 
   #streetNumber: string;
@@ -57,8 +57,8 @@ export class Address {
     return this.#zipCode;
   }
 
-  clone(): Address {
-    return new Address(
+  clone(): AddressEntity {
+    return new AddressEntity(
       this.#street,
       this.#streetNumber,
       this.#city,
@@ -72,7 +72,7 @@ export class Address {
     } - ZipCode: ${this.#zipCode}`;
   }
 
-  isEqual(address: Address) {
+  isEqual(address: AddressEntity) {
     return (
       this.#street === address.street &&
       this.#streetNumber === address.streetNumber &&

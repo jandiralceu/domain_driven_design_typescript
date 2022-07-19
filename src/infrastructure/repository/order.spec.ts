@@ -2,11 +2,11 @@ import { Sequelize } from 'sequelize-typescript';
 import { faker } from '@faker-js/faker';
 
 import {
-  Address,
-  Customer,
-  Order,
-  OrderItem,
-  Product,
+  AddressEntity,
+  CustomerEntity,
+  OrderEntity,
+  OrderItemEntity,
+  ProductEntity,
   TObject,
 } from '@/domain/entities';
 import {
@@ -28,36 +28,34 @@ describe('CustomerRepository', () => {
   let mockCustomerRepository: CustomerRepository;
   let mockProductRepository: ProductRepository;
 
+  let mockCustomer: CustomerEntity;
+  let mockProduct: ProductEntity;
+  let mockOrder: OrderEntity;
+
   beforeEach(async () => {
     sequelize = new Sequelize({
       dialect: 'sqlite',
-      storage: ':memory',
+      storage: 'memory',
       logging: false,
       sync: { force: true },
     });
 
     sequelize.addModels([
       CustomerModel,
-      OrderModel,
-      OrderItemModel,
       ProductModel,
+      OrderItemModel,
+      OrderModel,
     ]);
     await sequelize.sync();
 
     mockOrderRepository = new OrderRepository();
     mockCustomerRepository = new CustomerRepository();
     mockProductRepository = new ProductRepository();
-  });
 
-  afterEach(async () => {
-    await sequelize.close();
-  });
-
-  it('should create a new order', async () => {
-    const customer = new Customer(
+    mockCustomer = new CustomerEntity(
       faker.datatype.uuid(),
       faker.name.findName(),
-      new Address(
+      new AddressEntity(
         faker.address.street(),
         faker.address.buildingNumber(),
         faker.address.cityName(),
@@ -65,41 +63,130 @@ describe('CustomerRepository', () => {
       )
     );
 
-    const product = new Product(
+    mockProduct = new ProductEntity(
       faker.datatype.uuid(),
       faker.commerce.product(),
       faker.datatype.float()
     );
 
-    await mockCustomerRepository.create(customer);
-    await mockProductRepository.create(product);
-
-    const orderItem = new OrderItem(
+    mockOrder = new OrderEntity(
       faker.datatype.uuid(),
-      product.name,
-      product.price,
-      product.id,
-      faker.datatype.number({ min: 1, max: 6 })
+      mockCustomer.id,
+      Array.from({ length: faker.datatype.number({ min: 1, max: 3 }) }).map(
+        () =>
+          new OrderItemEntity(
+            faker.datatype.uuid(),
+            mockProduct.name,
+            mockProduct.price,
+            mockProduct.id,
+            faker.datatype.number({ min: 1, max: 6 })
+          )
+      )
     );
-
-    const order = new Order(faker.datatype.uuid(), customer.id, [orderItem]);
-
-    await mockOrderRepository.create(order);
-
-    const orderModel = await OrderModel.findOne({
-      where: { id: order.id },
-      include: ['items'],
-    });
-    const savedOrder = Order.fromJson(orderModel?.toJSON() as TObject);
-
-    expect(savedOrder.isEqual(order)).toBe(true);
   });
 
-  it('should throw an error if find by an invalid order', async () => {
+  afterAll(async () => {
+    await sequelize.truncate({});
+  });
+
+  it('should create a new order', async () => {
+    await mockCustomerRepository.create(mockCustomer);
+    await mockProductRepository.create(mockProduct);
+    await mockOrderRepository.create(mockOrder);
+
+    const orderModel = await OrderModel.findOne({
+      where: { id: mockOrder.id },
+      include: ['items'],
+    });
+
+    const savedOrder = OrderRepository.toEntity(
+      orderModel?.toJSON() as TObject
+    );
+
+    expect(savedOrder.isEqual(mockOrder)).toBe(true);
+  });
+
+  it('should throw an error if find by an invalid id order', async () => {
     await expect(() =>
       mockOrderRepository.find(faker.datatype.uuid())
     ).rejects.toThrow(NotFoundError);
   });
 
-  it.skip('should return an order', () => {});
+  it('should return an order if find by a valid id', async () => {
+    await mockCustomerRepository.create(mockCustomer);
+    await mockProductRepository.create(mockProduct);
+    await mockOrderRepository.create(mockOrder);
+
+    const foundedOrder = await mockOrderRepository.find(mockOrder.id);
+    expect(foundedOrder.isEqual(mockOrder)).toBe(true);
+  });
+
+  it('should find all orders', async () => {
+    // Removing the order created by beforeEach hook.
+    // await sequelize.truncate();
+
+    await mockCustomerRepository.create(mockCustomer);
+    await mockProductRepository.create(mockProduct);
+    await mockOrderRepository.create(mockOrder);
+
+    // add more one product
+    const costumer = new CustomerEntity(
+      faker.datatype.uuid(),
+      faker.name.findName(),
+      new AddressEntity(
+        faker.address.street(),
+        faker.address.buildingNumber(),
+        faker.address.cityName(),
+        faker.address.zipCode('###.##-###')
+      )
+    );
+    await mockCustomerRepository.create(costumer);
+
+    const product = new ProductEntity(
+      faker.datatype.uuid(),
+      faker.commerce.product(),
+      faker.datatype.float()
+    );
+    await mockProductRepository.create(product);
+
+    const order = new OrderEntity(
+      faker.datatype.uuid(),
+      costumer.id,
+      Array.from({ length: faker.datatype.number({ min: 1, max: 3 }) }).map(
+        () =>
+          new OrderItemEntity(
+            faker.datatype.uuid(),
+            product.name,
+            product.price,
+            product.id,
+            faker.datatype.number({ min: 1, max: 6 })
+          )
+      )
+    );
+    await mockOrderRepository.create(order);
+
+    const currentOrders = [mockOrder, order];
+    const foundedOrders = await mockOrderRepository.findAll();
+
+    expect(foundedOrders.sort()).toEqual(currentOrders.sort());
+  });
+
+  it.skip('should update an order', async () => {
+    const beforeUpgrade = mockOrder.clone();
+    mockOrder.addItem(
+      new OrderItemEntity(
+        faker.datatype.uuid(),
+        mockProduct.name,
+        mockProduct.price,
+        mockProduct.id,
+        faker.datatype.number({ min: 1, max: 6 })
+      )
+    );
+
+    await mockOrderRepository.update(mockOrder);
+
+    const updatedOrder = await mockOrderRepository.find(mockOrder.id);
+
+    expect(updatedOrder).toStrictEqual(beforeUpgrade);
+  });
 });

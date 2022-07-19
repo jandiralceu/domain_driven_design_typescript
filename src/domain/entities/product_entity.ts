@@ -1,7 +1,7 @@
 import { ValidationError } from '../errors';
-import { TObject, Validation } from './types';
+import { Validation } from './types';
 
-export class Product {
+export class ProductEntity {
   #id: string;
 
   #name: string;
@@ -55,15 +55,15 @@ export class Product {
     this.#name = name;
   }
 
-  clone(): Product {
-    return new Product(this.#id, this.#name, this.#price);
+  clone(): ProductEntity {
+    return new ProductEntity(this.#id, this.#name, this.#price);
   }
 
   toString(): string {
     return `id: ${this.#id} - name: ${this.#name} - price: ${this.#price}`;
   }
 
-  isEqual(product: Product): boolean {
+  isEqual(product: ProductEntity): boolean {
     return (
       this.#id === product.id &&
       this.#name === product.name &&
@@ -108,9 +108,5 @@ export class Product {
         }
       }
     });
-  }
-
-  static fromJson(json: TObject) {
-    return new Product(json.id, json.name, json.price);
   }
 }

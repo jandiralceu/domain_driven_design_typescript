@@ -1,4 +1,4 @@
 import { IMainRepository } from './main';
-import { Order } from '../entities';
+import { OrderEntity } from '@/domain/entities';
 
-export interface IOrderRepository extends IMainRepository<Order> {}
+export interface IOrderRepository extends IMainRepository<OrderEntity> {}

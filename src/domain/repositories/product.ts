@@ -1,4 +1,4 @@
 import { IMainRepository } from './main';
-import { Product } from '../entities';
+import { ProductEntity } from '../entities';
 
-export interface IProductRepository extends IMainRepository<Product> {}
+export interface IProductRepository extends IMainRepository<ProductEntity> {}

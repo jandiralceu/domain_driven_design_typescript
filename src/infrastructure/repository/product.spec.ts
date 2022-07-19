@@ -1,36 +1,41 @@
 import { Sequelize } from 'sequelize-typescript';
 import { faker } from '@faker-js/faker';
 
-import { Product } from '@/domain/entities';
+import { ProductEntity } from '@/domain/entities';
 import { ProductModel } from '../db';
 import { ProductRepository } from './product';
 
 describe('ProductRepository', () => {
   let sequelize: Sequelize;
-  let mockProduct: Product;
+  let mockProduct: ProductEntity;
   let mockProductRepository: ProductRepository;
 
   beforeEach(async () => {
+    mockProduct = new ProductEntity(
+      faker.datatype.uuid(),
+      faker.commerce.productName(),
+      faker.datatype.number({ min: 1, max: 500 })
+    );
+
     sequelize = new Sequelize({
       dialect: 'sqlite',
-      storage: ':memory',
+      storage: 'memory',
       logging: false,
       sync: { force: true },
     });
 
     sequelize.addModels([ProductModel]);
-    await sequelize.sync();
+    // await sequelize.sync();
 
-    mockProduct = new Product(
-      faker.datatype.uuid(),
-      faker.commerce.productName(),
-      faker.datatype.number({ min: 1, max: 500 })
-    );
     mockProductRepository = new ProductRepository();
   });
 
-  afterEach(async () => {
-    await sequelize.close();
+  // afterEach(async () => {
+  //   await sequelize.close();
+  // });
+
+  afterAll(async () => {
+    await sequelize.truncate({});
   });
 
   it('should create a product', async () => {
@@ -74,8 +79,10 @@ describe('ProductRepository', () => {
   });
 
   it('should find all products', async () => {
+    await sequelize.truncate({});
+
     const products = Array.from({ length: 5 }, () => {
-      return new Product(
+      return new ProductEntity(
         faker.datatype.uuid(),
         faker.commerce.productName(),
         faker.datatype.number({ min: 1, max: 500 })

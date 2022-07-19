@@ -1,20 +1,20 @@
 import { faker } from '@faker-js/faker';
 
-import { Address } from './address';
-import { Customer } from './customer';
+import { AddressEntity } from './address_entity';
+import { CustomerEntity } from './customer_entity';
 
-describe('customer', () => {
-  let mockAddress: Address;
-  let mockCustomer: Customer;
+describe('CustomerEntity', () => {
+  let mockAddress: AddressEntity;
+  let mockCustomer: CustomerEntity;
 
   beforeEach(() => {
-    mockAddress = new Address(
+    mockAddress = new AddressEntity(
       faker.address.street(),
       faker.address.buildingNumber(),
       faker.address.cityName(),
       faker.address.zipCode('###.##-###')
     );
-    mockCustomer = new Customer(
+    mockCustomer = new CustomerEntity(
       faker.datatype.uuid(),
       faker.name.findName(),
       mockAddress
@@ -23,20 +23,20 @@ describe('customer', () => {
 
   it('should throw an error if id is empty', () => {
     expect(
-      () => new Customer('', faker.name.findName(), mockAddress)
+      () => new CustomerEntity('', faker.name.findName(), mockAddress)
     ).toThrowError('id is required.');
   });
 
   it('should throw an error if name is empty', () => {
     expect(
-      () => new Customer(faker.datatype.uuid(), '', mockAddress)
+      () => new CustomerEntity(faker.datatype.uuid(), '', mockAddress)
     ).toThrowError('name is required.');
   });
 
   it('should throw an error if name is less than 4 characters', () => {
     const name = faker.datatype.string(3);
     expect(
-      () => new Customer(faker.datatype.uuid(), name, mockAddress)
+      () => new CustomerEntity(faker.datatype.uuid(), name, mockAddress)
     ).toThrowError(
       `name length, must be equal or greater than 4. Current length is ${name.length}.`
     );
@@ -50,14 +50,14 @@ describe('customer', () => {
 
   it('should throw an error if new name is invalid', () => {
     const name = faker.name.findName();
-    const customer = new Customer('1', name, mockAddress);
+    const customer = new CustomerEntity('1', name, mockAddress);
 
     expect(() => customer.changeName('')).toThrow('name is required.');
     expect(customer.name).toBe(name);
   });
 
   it('should change address', () => {
-    const newAddress = new Address(
+    const newAddress = new AddressEntity(
       faker.address.street(),
       faker.address.buildingNumber(),
       faker.address.cityName(),
@@ -74,10 +74,10 @@ describe('customer', () => {
   });
 
   it('should return "false" if customers are not equals', () => {
-    const newCustomer = new Customer(
+    const newCustomer = new CustomerEntity(
       faker.datatype.uuid(),
       faker.name.findName(),
-      new Address(
+      new AddressEntity(
         faker.address.street(),
         faker.address.buildingNumber(),
         faker.address.cityName(),

@@ -1,7 +1,7 @@
 import { ValidationError } from '../errors';
 import { TObject, Validation } from './types';
 
-export class OrderItem {
+export class OrderItemEntity {
   #id: string;
 
   #name: string;
@@ -78,8 +78,8 @@ export class OrderItem {
     this.#quantity = quantity;
   }
 
-  clone(): OrderItem {
-    return new OrderItem(
+  clone(): OrderItemEntity {
+    return new OrderItemEntity(
       this.#id,
       this.#name,
       this.#unitPrice,
@@ -94,7 +94,7 @@ export class OrderItem {
     } - quantity: ${this.#quantity} - productId: ${this.#productId}`;
   }
 
-  isEqual(orderItem: OrderItem): boolean {
+  isEqual(orderItem: OrderItemEntity): boolean {
     return (
       this.#id === orderItem.id &&
       this.#name === orderItem.name &&
@@ -131,15 +131,5 @@ export class OrderItem {
         }
       }
     });
-  }
-
-  static toJson(json: TObject) {
-    return new OrderItem(
-      json.id,
-      json.name,
-      json.price,
-      json.product_id,
-      json.quantity
-    );
   }
 }

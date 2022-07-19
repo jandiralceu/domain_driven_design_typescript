@@ -1,15 +1,15 @@
 import { faker } from '@faker-js/faker';
 
-import { Order } from './order';
-import { OrderItem } from './order_item';
+import { OrderEntity } from './order_entity';
+import { OrderItemEntity } from './order_item_entity';
 
-describe('Order', () => {
-  let mockItems: OrderItem[];
-  let mockOrder: Order;
+describe('OrderEntity', () => {
+  let mockItems: OrderItemEntity[];
+  let mockOrder: OrderEntity;
 
   beforeEach(() => {
     mockItems = Array.from({ length: 3 }, () => {
-      return new OrderItem(
+      return new OrderItemEntity(
         faker.datatype.uuid(),
         faker.commerce.product(),
         faker.datatype.float(),
@@ -18,7 +18,7 @@ describe('Order', () => {
       );
     });
 
-    mockOrder = new Order(
+    mockOrder = new OrderEntity(
       faker.datatype.uuid(),
       faker.datatype.uuid(),
       mockItems
@@ -26,20 +26,20 @@ describe('Order', () => {
   });
 
   it('should throw an error if "id" is empty', () => {
-    expect(() => new Order('', faker.datatype.uuid(), mockItems)).toThrowError(
-      'id is required.'
-    );
+    expect(
+      () => new OrderEntity('', faker.datatype.uuid(), mockItems)
+    ).toThrowError('id is required.');
   });
 
   it('should throw an error if "costumerId" is empty', () => {
-    expect(() => new Order(faker.datatype.uuid(), '', mockItems)).toThrowError(
-      'customerId is required.'
-    );
+    expect(
+      () => new OrderEntity(faker.datatype.uuid(), '', mockItems)
+    ).toThrowError('customerId is required.');
   });
 
   it('should throw an error if "items" is empty', () => {
     expect(
-      () => new Order(faker.datatype.uuid(), faker.datatype.uuid(), [])
+      () => new OrderEntity(faker.datatype.uuid(), faker.datatype.uuid(), [])
     ).toThrowError('items: add at the least 1 item.');
   });
 
@@ -54,7 +54,7 @@ describe('Order', () => {
 
   it('should return "false" if orders are not equals', () => {
     mockItems = Array.from({ length: 3 }, () => {
-      return new OrderItem(
+      return new OrderItemEntity(
         faker.datatype.uuid(),
         faker.commerce.product(),
         faker.datatype.float(),
@@ -63,11 +63,11 @@ describe('Order', () => {
       );
     });
 
-    const order = new Order(
+    const order = new OrderEntity(
       faker.datatype.uuid(),
       faker.datatype.uuid(),
       Array.from({ length: 3 }, () => {
-        return new OrderItem(
+        return new OrderItemEntity(
           faker.datatype.uuid(),
           faker.commerce.product(),
           faker.datatype.float(),

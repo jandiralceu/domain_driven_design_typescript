@@ -1,4 +1,4 @@
-import { Customer } from '@/domain/entities';
+import { AddressEntity, CustomerEntity, TObject } from '@/domain/entities';
 import { ICustomerRepository } from '@/domain/repositories';
 
 import { CustomerModel } from '../db';
@@ -7,7 +7,7 @@ import { NotFoundError, UnexpectedError } from '@/domain/errors';
 const DEFAULT_ERROR_MESSAGE = 'Something went wrong, please, try again later.';
 
 export class CustomerRepository implements ICustomerRepository {
-  async create(customer: Customer): Promise<void> {
+  async create(customer: CustomerEntity): Promise<void> {
     try {
       await CustomerModel.create({
         id: customer.id,
@@ -24,29 +24,29 @@ export class CustomerRepository implements ICustomerRepository {
     }
   }
 
-  async find(id: string): Promise<Customer> {
+  async find(id: string): Promise<CustomerEntity> {
     try {
       const result = await CustomerModel.findOne({
         where: { id },
         rejectOnEmpty: new NotFoundError('Customer not found.'),
       });
-      return Customer.fromJson(result);
+      return CustomerRepository.toCustomerEntity(result);
     } catch (error: any) {
       if (error instanceof NotFoundError) throw error;
       throw new UnexpectedError(error?.message ?? DEFAULT_ERROR_MESSAGE);
     }
   }
 
-  async findAll(): Promise<Customer[]> {
+  async findAll(): Promise<CustomerEntity[]> {
     try {
       const result = await CustomerModel.findAll();
-      return result.map(Customer.fromJson);
+      return result.map(CustomerRepository.toCustomerEntity);
     } catch (error: any) {
       throw new UnexpectedError(error?.message ?? DEFAULT_ERROR_MESSAGE);
     }
   }
 
-  async update(customer: Customer): Promise<void> {
+  async update(customer: CustomerEntity): Promise<void> {
     try {
       await CustomerModel.update(
         {
@@ -63,5 +63,20 @@ export class CustomerRepository implements ICustomerRepository {
     } catch (error: any) {
       throw new UnexpectedError(error?.message ?? DEFAULT_ERROR_MESSAGE);
     }
+  }
+
+  static toCustomerEntity(json: TObject): CustomerEntity {
+    return new CustomerEntity(
+      json.id,
+      json.name,
+      new AddressEntity(
+        json.street,
+        json.streetNumber,
+        json.city,
+        json.zipCode
+      ),
+      json.isActive,
+      json.rewardPoints
+    );
   }
 }

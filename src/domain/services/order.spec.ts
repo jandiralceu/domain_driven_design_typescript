@@ -1,13 +1,13 @@
 import { faker } from '@faker-js/faker';
-import { Order, OrderItem, Customer, Address } from '../entities';
+import { OrderEntity, OrderItemEntity, CustomerEntity, AddressEntity } from '../entities';
 import { OrderService } from './order';
 
 describe('OrderService', () => {
   it('should place an order', () => {
-    const customer = new Customer(
+    const customer = new CustomerEntity(
       faker.datatype.uuid(),
       faker.name.findName(),
-      new Address(
+      new AddressEntity(
         faker.address.street(),
         faker.address.buildingNumber(),
         faker.address.cityName(),
@@ -20,7 +20,7 @@ describe('OrderService', () => {
     const orderItems = Array.from(
       { length: 3 },
       () =>
-        new OrderItem(
+        new OrderItemEntity(
           faker.datatype.uuid(),
           faker.commerce.productName(),
           faker.datatype.number({ min: 1, max: 500 }),
@@ -41,13 +41,13 @@ describe('OrderService', () => {
 
   it('should return a total of all orders', () => {
     const orders = Array.from({ length: 3 }, () => {
-      return new Order(
+      return new OrderEntity(
         faker.datatype.uuid(),
         faker.datatype.uuid(),
         Array.from(
           { length: 4 },
           () =>
-            new OrderItem(
+            new OrderItemEntity(
               faker.datatype.uuid(),
               faker.commerce.productName(),
               faker.datatype.number({ min: 1, max: 1000 }),

@@ -1,13 +1,13 @@
 import { faker } from '@faker-js/faker';
 
-import { Product } from './product';
+import { ProductEntity } from './product_entity';
 
-describe('Product', () => {
-  let mockProduct: Product;
+describe('ProductEntity', () => {
+  let mockProduct: ProductEntity;
   let mockNegativePrice: number;
 
   beforeEach(() => {
-    mockProduct = new Product(
+    mockProduct = new ProductEntity(
       faker.datatype.uuid(),
       faker.commerce.product(),
       faker.datatype.float()
@@ -17,19 +17,21 @@ describe('Product', () => {
 
   it('should throw an error if id is empty', () => {
     expect(
-      () => new Product('', faker.commerce.product(), faker.datatype.float())
+      () =>
+        new ProductEntity('', faker.commerce.product(), faker.datatype.float())
     ).toThrowError('id is required.');
   });
 
   it('should throw an error if name is empty', () => {
     expect(
-      () => new Product(faker.datatype.uuid(), '', faker.datatype.float())
+      () => new ProductEntity(faker.datatype.uuid(), '', faker.datatype.float())
     ).toThrowError('name is required.');
   });
 
   it('should throw an error if name length is less than 2 characters', () => {
     expect(
-      () => new Product(faker.datatype.uuid(), 'd', faker.datatype.float())
+      () =>
+        new ProductEntity(faker.datatype.uuid(), 'd', faker.datatype.float())
     ).toThrowError(
       'name length, must be equal or greater than 2. Current length is 1.'
     );
@@ -38,7 +40,7 @@ describe('Product', () => {
   it('should throw an error if price is less than 0', () => {
     expect(
       () =>
-        new Product(
+        new ProductEntity(
           faker.datatype.uuid(),
           faker.commerce.product(),
           mockNegativePrice
@@ -49,7 +51,7 @@ describe('Product', () => {
   });
 
   it('should return false if products are different', () => {
-    const productToCompare = new Product(
+    const productToCompare = new ProductEntity(
       faker.datatype.uuid(),
       faker.commerce.product(),
       faker.datatype.float()
