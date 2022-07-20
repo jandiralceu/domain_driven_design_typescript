@@ -86,7 +86,7 @@ describe('CustomerRepository', () => {
   });
 
   afterAll(async () => {
-    await sequelize.truncate();
+    await sequelize.close();
   });
 
   it('should create a new order', async () => {

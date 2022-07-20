@@ -1,8 +1,10 @@
 import { Sequelize } from 'sequelize-typescript';
 import { faker } from '@faker-js/faker';
 
+import { NotFoundError } from '@/domain/errors';
 import { ProductEntity } from '@/domain/entities';
-import { ProductModel } from '../db';
+import { ProductModel } from '@/infrastructure/db';
+
 import { ProductRepository } from './product';
 
 describe('ProductRepository', () => {
@@ -25,13 +27,13 @@ describe('ProductRepository', () => {
     });
 
     sequelize.addModels([ProductModel]);
-    // await sequelize.sync();
+    await sequelize.sync();
 
     mockProductRepository = new ProductRepository();
   });
 
   afterAll(async () => {
-    await sequelize.truncate();
+    await sequelize.close();
   });
 
   it('should create a product', async () => {
@@ -66,6 +68,12 @@ describe('ProductRepository', () => {
     expect(updatedProduct?.price).not.toBe(productBeforeUpgrade.price);
   });
 
+  it('should throw an error if find by an invalid id product', async () => {
+    await expect(
+      mockProductRepository.find(faker.datatype.uuid())
+    ).rejects.toThrow(NotFoundError);
+  });
+
   it('should find a product', async () => {
     await mockProductRepository.create(mockProduct);
 
@@ -75,8 +83,6 @@ describe('ProductRepository', () => {
   });
 
   it('should find all products', async () => {
-    await sequelize.truncate({});
-
     const products = Array.from({ length: 5 }, () => {
       return new ProductEntity(
         faker.datatype.uuid(),

@@ -1,10 +1,11 @@
 import { Sequelize } from 'sequelize-typescript';
 import { faker } from '@faker-js/faker';
 
-import { AddressEntity, CustomerEntity, TObject } from '@/domain/entities';
-import { CustomerModel } from '../db';
-import { CustomerRepository } from './customer';
 import { NotFoundError } from '@/domain/errors';
+import { CustomerModel } from '@/infrastructure/db';
+import { AddressEntity, CustomerEntity, TObject } from '@/domain/entities';
+
+import { CustomerRepository } from './customer';
 
 describe('CustomerRepository', () => {
   let sequelize: Sequelize;
@@ -37,7 +38,7 @@ describe('CustomerRepository', () => {
   });
 
   afterAll(async () => {
-    await sequelize.truncate();
+    await sequelize.close();
   });
 
   it('should create a customer', async () => {

@@ -1,5 +1,5 @@
 import { ValidationError } from '../errors';
-import { TObject, Validation } from './types';
+import { Validation } from './types';
 
 export class OrderItemEntity {
   #id: string;
