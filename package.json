@@ -1,7 +1,7 @@
 {
   "name": "entities",
   "version": "1.0.0",
-  "description": "DDD course from Fullcycle",
+  "description": "Domain Driven Design(DDD) course from Fullcycle",
   "homepage": "https://github.com/jandiralceu/domain_driven_design_typescript",
   "repository": {
     "type": "git",
@@ -75,7 +75,7 @@
     "uuid": "^8.3.2"
   },
   "lint-staged": {
-    "*.{ts}": [
+    "*.ts": [
       "npm run lint:eslint",
       "npm run lint:prettier",
       "npm run test:staged"
