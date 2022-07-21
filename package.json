@@ -5,14 +5,15 @@
   "main": "index.js",
   "scripts": {
     "build": "npx tsc",
-    "test": "jest --no-cache --runInBand",
+    "test": "jest --no-cache --runInBand --passWithNoTests",
     "test:watch": "npm run test -- --watch",
     "test:staged": "npm run test -- --findRelatedTests",
     "test:ci": "npm run test -- --coverage",
     "lint:eslint": "eslint --ext .ts --fix ./src",
     "lint:prettier": "prettier --write ./src",
     "lint:check": "prettier --check ./src",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "commit": "cz"
   },
   "keywords": [
     "ddd",
@@ -25,6 +26,8 @@
   "author": "Jandir A. Cutabiala <me@jandir.co>",
   "license": "ISC",
   "devDependencies": {
+    "@commitlint/cli": "^17.0.3",
+    "@commitlint/config-conventional": "^17.0.3",
     "@faker-js/faker": "^7.3.0",
     "@swc/cli": "^0.1.57",
     "@swc/core": "^1.2.210",
@@ -36,6 +39,7 @@
     "@typescript-eslint/eslint-plugin": "^5.30.5",
     "@typescript-eslint/parser": "^5.30.5",
     "commitizen": "^4.2.5",
+    "cz-conventional-changelog": "^3.3.0",
     "eslint": "^8.19.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-airbnb-typescript": "^17.0.0",
@@ -58,10 +62,15 @@
     "uuid": "^8.3.2"
   },
   "lint-staged": {
-    "*.{js,ts}": [
+    "*.{ts}": [
       "npm run lint:eslint",
       "npm run lint:prettier",
       "npm run test:staged"
     ]
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
   }
 }

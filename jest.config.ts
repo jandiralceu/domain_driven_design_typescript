@@ -4,6 +4,7 @@
  */
 
 export default {
+  roots: ['<rootDir>/src'],
   clearMocks: true,
   collectCoverage: true,
   collectCoverageFrom: [
@@ -11,19 +12,18 @@ export default {
     '!<rootDir>/src/domain/entities/types/**/*',
     '!<rootDir>/src/domain/repositories/**/*',
     '!<rootDir>/src/infrastructure/db/**/*',
-    '!<rootDir>/src/**/index.ts'
+    '!<rootDir>/src/**/index.ts',
+    '!**/commitlint.config.js',
   ],
   coverageDirectory: 'coverage',
   // Indicates which provider should be used to instrument code for coverage
-  coverageProvider: "v8",
+  coverageProvider: 'v8',
   moduleNameMapper: {
     '@/(.*)': '<rootDir>/src/$1',
   },
   // An array of regexp pattern strings that are matched against all test paths, matched tests are skipped
-  testPathIgnorePatterns: [
-    "/node_modules/", "dist"
-  ],
+  testPathIgnorePatterns: ['/node_modules/', 'dist'],
   transform: {
-    "^.+\\.(t|j)sx?$": ["@swc/jest"],
+    '^.+\\.(t|j)sx?$': ['@swc/jest'],
   },
 };
