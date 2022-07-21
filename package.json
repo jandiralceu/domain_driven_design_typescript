@@ -22,7 +22,7 @@
     "architecture",
     "fullcycle"
   ],
-  "author": "Jandir A. Cutabiala <me@jandir.co, jandiralceu@gmail.com>",
+  "author": "Jandir A. Cutabiala <me@jandir.co>",
   "license": "ISC",
   "devDependencies": {
     "@faker-js/faker": "^7.3.0",
