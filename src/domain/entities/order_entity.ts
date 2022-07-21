@@ -7,7 +7,7 @@ export class OrderEntity {
 
   #customerId: string;
 
-  #items: OrderItemEntity[];
+  #items: Map<string, OrderItemEntity>;
 
   constructor(id: string, customerId: string, items: OrderItemEntity[]) {
     this.#validation([
@@ -26,7 +26,7 @@ export class OrderEntity {
 
     this.#id = id;
     this.#customerId = customerId;
-    this.#items = items;
+    this.#items = new Map(items.map((item) => [item.id, item]));
   }
 
   get id(): string {
@@ -38,23 +38,23 @@ export class OrderEntity {
   }
 
   get items(): OrderItemEntity[] {
-    return this.#items;
+    return Array.from(this.#items.values());
   }
 
   get totalItems(): number {
-    return this.#items.length;
+    return this.#items.size;
   }
 
   get total(): number {
-    return this.#items.reduce((acc, item) => acc + item.price, 0);
+    return this.items.reduce((acc, item) => acc + item.price, 0);
   }
 
   addItem(item: OrderItemEntity) {
-    this.#items.push(item);
+    this.#items.set(item.id, item);
   }
 
   removeItem(id: string) {
-    this.#items = this.#items.filter((item) => item.id !== id);
+    this.#items.delete(id);
   }
 
   toString(): string {
@@ -72,7 +72,7 @@ export class OrderEntity {
     return new OrderEntity(
       this.#id,
       this.#customerId,
-      this.#items.map(
+      this.items.map(
         (item) =>
           new OrderItemEntity(
             item.id,
@@ -90,7 +90,7 @@ export class OrderEntity {
       this.#id === order.id &&
       this.#customerId === order.customerId &&
       this.totalItems === order.totalItems &&
-      this.#items.every((orderItem, index) =>
+      this.items.every((orderItem, index) =>
         orderItem.isEqual(order.items[index])
       )
     );

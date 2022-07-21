@@ -57,13 +57,35 @@ export class OrderRepository implements IOrderRepository {
 
   async update(order: OrderEntity): Promise<void> {
     try {
-      await OrderModel.update(
-        {
-          items: order.items,
-        },
-        { where: { id: order.id } }
-      );
+      await this.find(order.id);
+
+      await OrderModel.sequelize?.transaction(async (transaction) => {
+        await OrderItemModel.destroy({
+          where: { order_id: order.id },
+          transaction,
+        });
+
+        await OrderItemModel.bulkCreate(
+          order.items.map((item) => ({
+            id: item.id,
+            name: item.name,
+            price: item.unitPrice,
+            quantity: item.quantity,
+            product_id: item.productId,
+            order_id: order.id,
+          })),
+          { transaction }
+        );
+
+        await OrderModel.update(
+          {
+            total: order.total,
+          },
+          { where: { id: order.id } }
+        );
+      });
     } catch (error: any) {
+      if (error instanceof NotFoundError) throw error;
       throw new UnexpectedError(error?.message ?? DEFAULT_ERROR_MESSAGE);
     }
   }

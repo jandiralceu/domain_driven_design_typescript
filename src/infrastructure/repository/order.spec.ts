@@ -22,7 +22,7 @@ import {
 } from '@/infrastructure/db';
 import { NotFoundError } from '@/domain/errors';
 
-describe('CustomerRepository', () => {
+describe('OrderRepository', () => {
   let sequelize: Sequelize;
   let mockOrderRepository: OrderRepository;
   let mockCustomerRepository: CustomerRepository;
@@ -83,6 +83,10 @@ describe('CustomerRepository', () => {
           )
       )
     );
+
+    await mockCustomerRepository.create(mockCustomer);
+    await mockProductRepository.create(mockProduct);
+    await mockOrderRepository.create(mockOrder);
   });
 
   afterAll(async () => {
@@ -90,10 +94,6 @@ describe('CustomerRepository', () => {
   });
 
   it('should create a new order', async () => {
-    await mockCustomerRepository.create(mockCustomer);
-    await mockProductRepository.create(mockProduct);
-    await mockOrderRepository.create(mockOrder);
-
     const orderModel = await OrderModel.findOne({
       where: { id: mockOrder.id },
       include: ['items'],
@@ -113,22 +113,11 @@ describe('CustomerRepository', () => {
   });
 
   it('should return an order if find by a valid id', async () => {
-    await mockCustomerRepository.create(mockCustomer);
-    await mockProductRepository.create(mockProduct);
-    await mockOrderRepository.create(mockOrder);
-
     const foundedOrder = await mockOrderRepository.find(mockOrder.id);
     expect(foundedOrder.isEqual(mockOrder)).toBe(true);
   });
 
   it('should find all orders', async () => {
-    // Removing the order created by beforeEach hook.
-    // await sequelize.truncate();
-
-    await mockCustomerRepository.create(mockCustomer);
-    await mockProductRepository.create(mockProduct);
-    await mockOrderRepository.create(mockOrder);
-
     // add more one product
     const costumer = new CustomerEntity(
       faker.datatype.uuid(),
@@ -171,8 +160,28 @@ describe('CustomerRepository', () => {
     expect(foundedOrders.sort()).toEqual(currentOrders.sort());
   });
 
-  it.skip('should update an order', async () => {
-    const beforeUpgrade = mockOrder.clone();
+  it('should throw an error of try to update and order with invalid id', async () => {
+    const invalidOrder = new OrderEntity(
+      faker.datatype.uuid(),
+      mockCustomer.id,
+      Array.from({ length: faker.datatype.number({ min: 1, max: 3 }) }).map(
+        () =>
+          new OrderItemEntity(
+            faker.datatype.uuid(),
+            mockProduct.name,
+            mockProduct.price,
+            mockProduct.id,
+            faker.datatype.number({ min: 1, max: 6 })
+          )
+      )
+    );
+
+    await expect(mockOrderRepository.update(invalidOrder)).rejects.toThrow(
+      NotFoundError
+    );
+  });
+
+  it('should update an order', async () => {
     mockOrder.addItem(
       new OrderItemEntity(
         faker.datatype.uuid(),
@@ -187,6 +196,6 @@ describe('CustomerRepository', () => {
 
     const updatedOrder = await mockOrderRepository.find(mockOrder.id);
 
-    expect(updatedOrder).toStrictEqual(beforeUpgrade);
+    expect(updatedOrder.isEqual(mockOrder)).toBe(true);
   });
 });
