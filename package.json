@@ -2,6 +2,15 @@
   "name": "entities",
   "version": "1.0.0",
   "description": "DDD course from Fullcycle",
+  "homepage": "https://github.com/jandiralceu/domain_driven_design_typescript",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jandiralceu/domain_driven_design_typescript"
+  },
+  "bugs": {
+    "email": "me@jandir.co",
+    "url": "https://github.com/jandiralceu/domain_driven_design_typescript/issues"
+  },
   "main": "index.js",
   "scripts": {
     "build": "npx tsc",
@@ -23,7 +32,11 @@
     "architecture",
     "fullcycle"
   ],
-  "author": "Jandir A. Cutabiala <me@jandir.co>",
+  "author": {
+    "name": "Jandir A. Cutadiala",
+    "url": "https://jandir.co",
+    "email": "me@jandir.co"
+  },
   "license": "ISC",
   "devDependencies": {
     "@commitlint/cli": "^17.0.3",
