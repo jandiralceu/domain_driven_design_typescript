@@ -14,7 +14,7 @@
   "main": "index.js",
   "scripts": {
     "build": "npx tsc",
-    "test": "jest --no-cache --runInBand --passWithNoTests",
+    "test": "jest --bail --no-cache --runInBand --passWithNoTests",
     "test:watch": "npm run test -- --watch",
     "test:staged": "npm run test -- --findRelatedTests",
     "test:ci": "npm run test -- --coverage",
@@ -22,7 +22,8 @@
     "lint:prettier": "prettier --write ./src",
     "lint:check": "prettier --check ./src",
     "prepare": "husky install",
-    "commit": "cz"
+    "commit": "cz",
+    "clean": "rimraf dist coverage"
   },
   "keywords": [
     "ddd",
@@ -63,6 +64,7 @@
     "jest": "^28.1.2",
     "lint-staged": "^13.0.3",
     "prettier": "2.7.1",
+    "rimraf": "^3.0.2",
     "ts-jest": "^28.0.5",
     "ts-node": "^10.8.2",
     "typescript": "^4.7.4"
