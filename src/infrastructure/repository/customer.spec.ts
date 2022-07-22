@@ -56,16 +56,30 @@ describe('CustomerRepository', () => {
   });
 
   it('should throw an error if create customer fails', async () => {
+    const errorMessage = faker.random.words();
+
     jest
       .spyOn(CustomerModel, 'create')
-      .mockImplementationOnce(() =>
-        Promise.reject(new Error(faker.random.words()))
-      );
+      .mockImplementationOnce(() => Promise.reject(new Error(errorMessage)));
 
     await expect(mockCustomerRepository.create(mockCustomer)).rejects.toThrow(
-      UnexpectedError
+      errorMessage
     );
   });
+
+  it(
+    'should throw an error with default error message if create customer' +
+      ' fails',
+    async () => {
+      jest
+        .spyOn(CustomerModel, 'create')
+        .mockImplementationOnce(() => Promise.reject());
+
+      await expect(mockCustomerRepository.create(mockCustomer)).rejects.toThrow(
+        UnexpectedError
+      );
+    }
+  );
 
   it('should update a product', async () => {
     await mockCustomerRepository.create(mockCustomer);

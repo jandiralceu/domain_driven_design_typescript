@@ -37,16 +37,30 @@ describe('ProductRepository', () => {
   });
 
   it('should throw an error if create product fails', async () => {
+    const errorMessage = faker.random.words();
+
     jest
       .spyOn(ProductModel, 'create')
-      .mockImplementationOnce(() =>
-        Promise.reject(new Error(faker.random.words()))
-      );
+      .mockImplementationOnce(() => Promise.reject(new Error(errorMessage)));
 
     await expect(mockProductRepository.create(mockProduct)).rejects.toThrow(
-      UnexpectedError
+      errorMessage
     );
   });
+
+  it(
+    'should throw an error with default system message if create product' +
+      ' fails',
+    async () => {
+      jest
+        .spyOn(ProductModel, 'create')
+        .mockImplementationOnce(() => Promise.reject());
+
+      await expect(mockProductRepository.create(mockProduct)).rejects.toThrow(
+        UnexpectedError
+      );
+    }
+  );
 
   it('should create a product', async () => {
     await mockProductRepository.create(mockProduct);
