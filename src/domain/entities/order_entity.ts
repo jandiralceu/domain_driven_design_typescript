@@ -1,6 +1,7 @@
+import { ValidationError } from '@/domain/errors';
+import { Validation } from '@/domain/entities/types';
+
 import { OrderItemEntity } from './order_item_entity';
-import { Validation } from './types';
-import { ValidationError } from '../errors';
 
 export class OrderEntity {
   #id: string;

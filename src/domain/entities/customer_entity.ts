@@ -1,5 +1,6 @@
-import { ValidationError } from '../errors';
-import { Validation } from './types';
+import { ValidationError } from '@/domain/errors';
+import { Validation } from '@/domain/entities/types';
+
 import { AddressEntity } from './address_entity';
 
 export class CustomerEntity {

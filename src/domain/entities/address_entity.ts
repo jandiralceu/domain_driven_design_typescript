@@ -1,5 +1,5 @@
-import { Validation } from './types';
-import { ValidationError } from '../errors';
+import { ValidationError } from '@/domain/errors';
+import { Validation } from '@/domain/entities/types';
 
 export class AddressEntity {
   #street: string;

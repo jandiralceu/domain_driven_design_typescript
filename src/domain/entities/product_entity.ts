@@ -1,4 +1,4 @@
-import { ValidationError } from '../errors';
+import { ValidationError } from '@/domain/errors';
 import { Validation } from './types';
 
 export class ProductEntity {

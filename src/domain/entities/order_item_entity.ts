@@ -1,5 +1,5 @@
-import { ValidationError } from '../errors';
-import { Validation } from './types';
+import { ValidationError } from '@/domain/errors';
+import { Validation } from '@/domain/entities/types';
 
 export class OrderItemEntity {
   #id: string;

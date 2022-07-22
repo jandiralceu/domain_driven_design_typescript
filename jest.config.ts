@@ -26,4 +26,15 @@ export default {
   transform: {
     '^.+\\.(t|j)sx?$': ['@swc/jest'],
   },
+  reporters: [
+    'default',
+    [
+      'jest-html-reporters',
+      {
+        publicPath: './coverage',
+        filename: 'report.html',
+        pageTitle: 'DDD Course Project',
+      },
+    ],
+  ],
 };
