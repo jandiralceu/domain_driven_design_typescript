@@ -36,6 +36,18 @@ describe('ProductRepository', () => {
     await sequelize.close();
   });
 
+  it('should throw an error if create product fails', async () => {
+    jest
+      .spyOn(ProductModel, 'create')
+      .mockImplementationOnce(() =>
+        Promise.reject(new Error(faker.random.words()))
+      );
+
+    await expect(mockProductRepository.create(mockProduct)).rejects.toThrow(
+      UnexpectedError
+    );
+  });
+
   it('should create a product', async () => {
     await mockProductRepository.create(mockProduct);
 
@@ -48,16 +60,6 @@ describe('ProductRepository', () => {
       name: mockProduct.name,
       price: mockProduct.price,
     });
-  });
-
-  it('should throw an error if create product fails', async () => {
-    jest
-      .spyOn(ProductModel, 'create')
-      .mockImplementationOnce(() => Promise.reject(faker.random.words()));
-
-    await expect(mockProductRepository.create(mockProduct)).rejects.toThrow(
-      UnexpectedError
-    );
   });
 
   it('should update a product', async () => {

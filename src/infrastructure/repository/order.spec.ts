@@ -20,7 +20,7 @@ import {
   OrderModel,
   ProductModel,
 } from '@/infrastructure/db';
-import { NotFoundError } from '@/domain/errors';
+import { NotFoundError, UnexpectedError } from '@/domain/errors';
 
 describe('OrderRepository', () => {
   let sequelize: Sequelize;
@@ -106,10 +106,30 @@ describe('OrderRepository', () => {
     expect(savedOrder.isEqual(mockOrder)).toBe(true);
   });
 
+  it('should throw an error if create order fails', async () => {
+    jest
+      .spyOn(OrderModel, 'create')
+      .mockImplementationOnce(() => Promise.reject(faker.random.words()));
+
+    await expect(mockOrderRepository.create(mockOrder)).rejects.toThrow(
+      UnexpectedError
+    );
+  });
+
   it('should throw an error if find by an invalid id order', async () => {
     await expect(() =>
       mockOrderRepository.find(faker.datatype.uuid())
     ).rejects.toThrow(NotFoundError);
+  });
+
+  it('should throw an error if find by id fails', async () => {
+    jest
+      .spyOn(OrderModel, 'findOne')
+      .mockImplementationOnce(() => Promise.reject(faker.random.words()));
+
+    await expect(mockOrderRepository.find(mockOrder.id)).rejects.toThrow(
+      UnexpectedError
+    );
   });
 
   it('should return an order if find by a valid id', async () => {
@@ -160,6 +180,16 @@ describe('OrderRepository', () => {
     expect(foundedOrders.sort()).toEqual(currentOrders.sort());
   });
 
+  it('should throw an error if findAll fails', async () => {
+    jest
+      .spyOn(OrderModel, 'findAll')
+      .mockImplementationOnce(() => Promise.reject(faker.random.words()));
+
+    await expect(mockOrderRepository.findAll()).rejects.toThrow(
+      UnexpectedError
+    );
+  });
+
   it('should throw an error of try to update and order with invalid id', async () => {
     const invalidOrder = new OrderEntity(
       faker.datatype.uuid(),
@@ -178,6 +208,16 @@ describe('OrderRepository', () => {
 
     await expect(mockOrderRepository.update(invalidOrder)).rejects.toThrow(
       NotFoundError
+    );
+  });
+
+  it('should throw an error if update fails', async () => {
+    jest
+      .spyOn(OrderModel, 'update')
+      .mockImplementationOnce(() => Promise.reject(faker.random.words()));
+
+    await expect(mockOrderRepository.update(mockOrder)).rejects.toThrow(
+      UnexpectedError
     );
   });
 

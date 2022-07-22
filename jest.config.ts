@@ -26,6 +26,4 @@ export default {
   transform: {
     '^.+\\.(t|j)sx?$': ['@swc/jest'],
   },
-  setupFilesAfterEnv: ['jest-allure/dist/setup'],
-  testRunner: 'jest-jasmine2',
 };

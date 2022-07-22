@@ -1,8 +1,8 @@
 import { Sequelize } from 'sequelize-typescript';
 import { faker } from '@faker-js/faker';
 
-import { NotFoundError } from '@/domain/errors';
-import { CustomerModel } from '@/infrastructure/db';
+import { NotFoundError, UnexpectedError } from '@/domain/errors';
+import { CustomerModel, ProductModel } from '@/infrastructure/db';
 import { AddressEntity, CustomerEntity, TObject } from '@/domain/entities';
 
 import { CustomerRepository } from './customer';
@@ -55,6 +55,18 @@ describe('CustomerRepository', () => {
     expect(customer.isEqual(mockCustomer)).toBe(true);
   });
 
+  it('should throw an error if create customer fails', async () => {
+    jest
+      .spyOn(CustomerModel, 'create')
+      .mockImplementationOnce(() =>
+        Promise.reject(new Error(faker.random.words()))
+      );
+
+    await expect(mockCustomerRepository.create(mockCustomer)).rejects.toThrow(
+      UnexpectedError
+    );
+  });
+
   it('should update a product', async () => {
     await mockCustomerRepository.create(mockCustomer);
     const customerBeforeUpgrade = mockCustomer.clone();
@@ -69,6 +81,16 @@ describe('CustomerRepository', () => {
 
     expect(customerModel?.id).toBe(customerBeforeUpgrade.id);
     expect(customerModel?.name).not.toBe(customerBeforeUpgrade.name);
+  });
+
+  it('should throw an error if update customer fails', async () => {
+    jest
+      .spyOn(CustomerModel, 'update')
+      .mockImplementationOnce(() => Promise.reject(faker.random.words()));
+
+    await expect(mockCustomerRepository.update(mockCustomer)).rejects.toThrow(
+      UnexpectedError
+    );
   });
 
   it('should find a customer', async () => {
@@ -106,5 +128,15 @@ describe('CustomerRepository', () => {
     const foundedCustomers = await mockCustomerRepository.findAll();
 
     expect(foundedCustomers.sort()).toEqual(customers.sort());
+  });
+
+  it('should throw an error if findAll customers fails', async () => {
+    jest
+      .spyOn(CustomerModel, 'findAll')
+      .mockImplementationOnce(() => Promise.reject(faker.random.words()));
+
+    await expect(mockCustomerRepository.findAll()).rejects.toThrow(
+      UnexpectedError
+    );
   });
 });
