@@ -1,9 +1,9 @@
 import { Sequelize } from 'sequelize-typescript';
 import { faker } from '@faker-js/faker';
 
-import { NotFoundError } from '@/domain/errors';
 import { ProductEntity } from '@/domain/entities';
 import { ProductModel } from '@/infrastructure/db';
+import { NotFoundError, UnexpectedError } from '@/domain/errors';
 
 import { ProductRepository } from './product';
 
@@ -50,6 +50,16 @@ describe('ProductRepository', () => {
     });
   });
 
+  it('should throw an error if create product fails', async () => {
+    jest
+      .spyOn(ProductModel, 'create')
+      .mockImplementationOnce(() => Promise.reject(faker.random.words()));
+
+    await expect(mockProductRepository.create(mockProduct)).rejects.toThrow(
+      UnexpectedError
+    );
+  });
+
   it('should update a product', async () => {
     await mockProductRepository.create(mockProduct);
     const productBeforeUpgrade = mockProduct.clone();
@@ -66,6 +76,26 @@ describe('ProductRepository', () => {
     expect(updatedProduct?.id).toBe(productBeforeUpgrade.id);
     expect(updatedProduct?.name).not.toBe(productBeforeUpgrade.name);
     expect(updatedProduct?.price).not.toBe(productBeforeUpgrade.price);
+  });
+
+  it('should throw an error if update product fails', async () => {
+    jest
+      .spyOn(ProductModel, 'update')
+      .mockImplementationOnce(() => Promise.reject(faker.random.words()));
+
+    await expect(mockProductRepository.update(mockProduct)).rejects.toThrow(
+      UnexpectedError
+    );
+  });
+
+  it('should throw an error if find fails', async () => {
+    jest
+      .spyOn(ProductModel, 'findOne')
+      .mockImplementationOnce(() => Promise.reject(faker.random.words()));
+
+    await expect(mockProductRepository.find(mockProduct.id)).rejects.toThrow(
+      UnexpectedError
+    );
   });
 
   it('should throw an error if find by an invalid id product', async () => {
@@ -98,5 +128,15 @@ describe('ProductRepository', () => {
     const foundedProducts = await mockProductRepository.findAll();
 
     expect(foundedProducts.sort()).toEqual(products.sort());
+  });
+
+  it('should throw an error if findAll fails', async () => {
+    jest
+      .spyOn(ProductModel, 'findAll')
+      .mockImplementationOnce(() => Promise.reject(faker.random.words()));
+
+    await expect(mockProductRepository.findAll()).rejects.toThrow(
+      UnexpectedError
+    );
   });
 });
