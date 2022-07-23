@@ -66,10 +66,8 @@ describe('EventDispatcherInterface - Domain Events Tests', () => {
       price: faker.datatype.number({ min: 1, max: 500 }),
     });
 
-    // When notify be executed, SendEmailWhenProductIsCreated.handle() will
-    // be called
     eventDispatcher.notify(productCreatedEvent);
 
-    expect(spyEventHandler).toHaveBeenCalled();
+    expect(spyEventHandler).toHaveBeenCalledWith(productCreatedEvent);
   });
 });

@@ -9,6 +9,7 @@ export default {
   collectCoverage: true,
   collectCoverageFrom: [
     '<rootDir>/src/**/*.ts',
+    '!<rootDir>/src/**/*.interface.ts',
     '!<rootDir>/src/domain/entities/types/**/*',
     '!<rootDir>/src/domain/repositories/**/*',
     '!<rootDir>/src/infrastructure/db/**/*',
