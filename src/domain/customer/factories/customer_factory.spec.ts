@@ -2,7 +2,7 @@ import { faker } from '@faker-js/faker';
 
 import { CustomerFactory } from './customer_factory';
 import { AddressFactory } from '@/domain/customer/factories/address_factory';
-import { CustomerEntity } from '@/domain/customer';
+import { AddressEntity, CustomerEntity } from '@/domain/customer';
 
 describe('CustomerFactory', () => {
   it('should create a customer', () => {
@@ -17,5 +17,6 @@ describe('CustomerFactory', () => {
     );
 
     expect(customer).toBeInstanceOf(CustomerEntity);
+    expect(customer.address).toBeInstanceOf(AddressEntity);
   });
 });
