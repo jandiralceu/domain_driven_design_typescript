@@ -1,7 +1,8 @@
-import { ValidationError } from '@/domain/@shared/errors';
 import { Validation } from '@/domain/@shared';
+import { ValidationError } from '@/domain/@shared/errors';
+import { IProduct } from './product.interface';
 
-export class ProductEntity {
+export class ProductEntity implements IProduct {
   #id: string;
 
   #name: string;
