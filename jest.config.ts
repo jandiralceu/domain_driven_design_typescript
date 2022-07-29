@@ -12,7 +12,7 @@ export default {
     '!<rootDir>/src/**/*.interface.ts',
     '!<rootDir>/src/domain/entities/types/**/*',
     '!<rootDir>/src/domain/repositories/**/*',
-    '!<rootDir>/src/infrastructure/db/**/*',
+    '!<rootDir>/src/infrastructure/order/**/*',
     '!<rootDir>/src/**/index.ts',
     '!**/commitlint.config.js',
   ],
